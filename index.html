@@ -16,7 +16,7 @@ nav{position:sticky;top:0;z-index:20;background:var(--bg);background:color-mix(i
 nav .w{display:flex;align-items:center;gap:20px;min-height:60px;overflow-x:auto;white-space:nowrap}
 nav a{color:var(--mu);text-decoration:none;font-size:13px;font-weight:650}nav a:hover{color:var(--ac)}
 .nav-spacer{flex:1}.theme{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:999px;padding:7px 11px;cursor:pointer;font-weight:650}
-.hero{padding:68px 0 30px}.eyebrow{display:inline-flex;gap:8px;align-items:center;color:var(--ac);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.hero{padding:68px 0 30px}.eyebrow{gap:8px;align-items:center;color:var(--ac);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
 .eyebrow:before{content:"";width:22px;height:2px;background:var(--ac)}
 h1{font-size:clamp(34px,6vw,58px);line-height:1.06;letter-spacing:-.04em;margin:14px 0 12px;max-width:820px}
 .role{font-size:clamp(17px,2.5vw,21px);line-height:1.4;color:var(--ac2);font-weight:750;margin:0 0 16px}
@@ -37,6 +37,12 @@ h2{font-size:27px;line-height:1.2;letter-spacing:-.025em;margin:3px 0 0}.intro{c
 .pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.pills span{font-size:12px;color:var(--mu);background:var(--soft);border:1px solid var(--bd);padding:4px 9px;border-radius:999px}
 .callout{background:linear-gradient(120deg,var(--soft),var(--card));border:1px solid var(--bd);border-radius:14px;padding:20px}.callout strong{color:var(--ac)}
 .job{border-left:2px solid var(--bd);padding:0 0 28px 21px;margin-left:7px;position:relative}.job:before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 4px var(--bg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px}
+.card h3{margin:0 0 6px;font-size:16px}
+.card p,.card li{color:var(--mu);font-size:14.5px;margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tags span{font-size:12px;border:1px solid var(--bd);border-radius:999px;padding:2px 9px;color:var(--mu)}
 .job h3{font-size:18px;margin:0}.job .meta{color:var(--mu);font-size:13px;margin:3px 0 10px}
 .job ul{margin:0;padding-left:19px;color:var(--mu);font-size:14px}.job li{padding:0 0 6px}.job li strong{color:var(--tx)}
 .timeline-note{font-size:13px;color:var(--mu);margin-top:12px}.cert-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -56,8 +62,8 @@ footer .w{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 <header class="hero" id="top">
 <span class="eyebrow">Cloud · Infrastructure · Enterprise Technology</span>
 <h1>Damanpreet Singh Chadha</h1>
-<p class="role">Cloud Solutions Architect | AWS &amp; Azure | Hybrid Infrastructure | Enterprise Networking</p>
-<p class="lead">I bring 18+ years of IT experience across cloud infrastructure, systems administration, enterprise networking, identity, security, and architecture. I design, secure, automate, and support reliable cloud and hybrid environments, combining hands-on engineering with architectural decision-making and production operations.</p>
+<p class="role">Cloud &amp; Infrastructure Solutions Architect | AWS &amp; Azure | Microsoft Technologies | Enterprise Networking | Hybrid Cloud</p>
+<p class="lead">I bring 18+ years of experience across enterprise IT infrastructure, cloud platforms, Microsoft technologies, identity, networking, security and solutions architecture. My work spans Windows and Linux environments, AWS and Azure, virtualization, infrastructure automation, hybrid connectivity and production operations.</p>
 <div class="contactline"><span>Kitchener, Ontario, Canada</span><a href="tel:+15194371779">519-437-1779</a><a href="mailto:only.daman@gmail.com">only.daman@gmail.com</a><a href="https://www.linkedin.com/in/damanpreet-singh-chadha/" target="_blank" rel="noopener">LinkedIn profile</a></div>
 <div class="btns"><a class="btn primary" href="mailto:only.daman@gmail.com">Contact me</a><a class="btn" href="https://www.linkedin.com/in/damanpreet-singh-chadha/" target="_blank" rel="noopener">View LinkedIn</a><a class="btn" href="#experience">Explore experience</a><a class="btn" href="#projects">See My Projects</a></div>
 </header>
@@ -70,8 +76,9 @@ footer .w{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 </div>
 
 <section id="about"><div class="section-head"><div><div class="kicker">Professional profile</div><h2>About</h2></div></div>
-<p class="intro">My background spans enterprise infrastructure from on-premises systems and network engineering through cloud architecture and platform operations. I have supported five engineering teams and 30+ engineers, helping deliver secure, scalable, maintainable, and cost-conscious technology environments.</p>
-<div class="callout"><p><strong>How I work:</strong> I focus on secure-by-design architecture, automation, operational reliability, clear technical documentation, and practical solutions that balance business requirements with security, cost, and maintainability. My experience includes 24x7 on-call production support, incident response, disaster recovery, and collaboration with engineering and business stakeholders.</p></div>
+<p class="intro">I am an IT Infrastructure, Cloud and Solutions Architecture professional with 18+ years of experience designing, managing, securing and modernizing enterprise technology environments across on-premises infrastructure, cloud platforms, enterprise networking, systems administration and hybrid IT.
+My experience spans AWS, Microsoft Azure, GCP, Microsoft 365, Entra ID, Active Directory, Windows and Linux environments, virtualization, enterprise networking, cloud engineering and infrastructure automation.</p>
+<div class="callout"><p><strong>How I work:</strong> I translate business and engineering requirements into practical technology solutions, balancing reliability, security, cost and maintainability. My background combines hands-on infrastructure and cloud engineering with architecture guidance, technical troubleshooting, stakeholder collaboration, 24x7 production support, incident response and disaster recovery.</p></div>
 </section>
 
 <section id="expertise"><div class="section-head"><div><div class="kicker">Technical capabilities</div><h2>Core expertise</h2></div></div>
@@ -127,18 +134,19 @@ footer .w{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 </ul></div>
 </section>
 
-
 <section id="projects">
-<h2>Projects</h2>
+<div class="section-head"><div><div class="kicker">Selected technical work</div><h2>Architecture &amp; engineering initiatives</h2></div></div>
+<p class="intro">Selected examples of the infrastructure, cloud and platform work I have supported. These are experience highlights, not links to public repositories.</p>
 <div class="grid">
-<p class="card">
-<a href="https://github.com/damanpreet-cloud/aws-landing-zone-terraform" target="_blank"><h3>aws-landing-zone-terraform</h3></a><p>Multi-account AWS Organization in Terraform: OU structure, four SCP guardrails, org-wide CloudTrail, and delegated GuardDuty and Security Hub.</p><div class="tags" ><span>Terraform</span><span>Organizations</span><span>SCP</span><span>CloudTrail</span></div> </p>
-<a class="card" href="https://github.com/damanpreet-cloud/terraform-aws-modules" target="_blank"><h3>terraform-aws-modules</h3></a><p>Reusable VPC, EKS and IAM service-role modules with KMS encryption, IRSA, private-by-default networking and mocked-provider tests.</p><div class="tags"><span>Terraform</span><span>VPC</span><span>EKS</span><span>IRSA</span></div>
-<a class="card" href="https://github.com/damanpreet-cloud/github-actions-oidc-aws" target="_blank"><h3>github-actions-oidc-aws</h3></a><p>Terraform modules for keyless GitHub Actions to AWS: an OIDC provider plus least-privilege roles bound to a repo, branch or environment.</p><div class="tags"><span>GitHub Actions</span><span>OIDC</span><span>IAM</span></div>
-<a class="card" href="https://github.com/damanpreet-cloud/aws-cost-optimizer" target="_blank"><h3>aws-cost-optimizer</h3></a><p>Read-only Python CLI that finds idle and orphaned AWS resources and estimates monthly savings. Unit-tested with moto.</p><div class="tags"><span>Python</span><span>boto3</span><span>FinOps</span></div>
-<a class="card" href="https://github.com/damanpreet-cloud/engineering-runbooks" target="_blank"><h3>engineering-runbooks</h3></a><p>Sanitized standards, incident runbooks, procedures and review templates, with CI that enforces required sections.</p><div class="tags"><span>Runbooks</span><span>SRE</span><span>CI</span></div>
+<article class="card"><h3>AWS multi-account governance</h3><p>Supported an 8-account AWS Organization using Control Tower, Organizations and Service Control Policies to establish account governance and guardrails.</p><div class="tags"><span>AWS</span><span>Control Tower</span><span>SCPs</span></div></article>
+<article class="card"><h3>Infrastructure as Code</h3><p>Developed reusable Terraform modules and standardized infrastructure provisioning across development, UAT and production environments.</p><div class="tags"><span>Terraform</span><span>IaC</span><span>Automation</span></div></article>
+<article class="card"><h3>Secure CI/CD authentication</h3><p>Implemented GitHub Actions OIDC federation with least-privilege IAM roles, eliminating long-lived AWS credentials across 30+ repositories.</p><div class="tags"><span>GitHub Actions</span><span>OIDC</span><span>IAM</span></div></article>
+<article class="card"><h3>Kubernetes &amp; platform operations</h3><p>Supported EKS and ECS workloads, Kubernetes, Docker, Argo CD, private networking, autoscaling, GPU workloads and persistent storage.</p><div class="tags"><span>EKS</span><span>Kubernetes</span><span>Argo CD</span></div></article>
+<article class="card"><h3>Enterprise networking &amp; hybrid connectivity</h3><p>Designed and supported cloud and enterprise connectivity involving VPCs, Transit Gateway, Direct Connect, VPN, routing, firewalls and network segmentation.</p><div class="tags"><span>Networking</span><span>Hybrid Cloud</span><span>Security</span></div></article>
+<article class="card"><h3>Cloud cost optimization</h3><p>Contributed to more than $100K in cumulative cloud savings through rightsizing, Savings Plans, S3 lifecycle policies and serverless adoption.</p><div class="tags"><span>FinOps</span><span>Rightsizing</span><span>Cost Optimization</span></div></article>
 </div>
 </section>
+
 
 <section id="impact"><div class="section-head"><div><div class="kicker">Selected outcomes</div><h2>Scale &amp; impact</h2></div></div>
 <div class="grid">
