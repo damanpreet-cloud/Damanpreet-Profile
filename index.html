@@ -51,9 +51,102 @@ footer{border-top:1px solid var(--bd);padding:28px 0 42px;color:var(--mu);font-s
 footer .w{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 @media(max-width:700px){.w{width:min(100% - 30px,1040px)}.hero{padding:46px 0 22px}.stats{grid-template-columns:repeat(2,1fr)}.grid,.cert-grid{grid-template-columns:1fr}section{padding:30px 0}nav .w{gap:15px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+
+/* Floating LinkedIn recommendation rails */
+.recommendation-rail{
+  position:fixed;top:50%;transform:translateY(-50%);width:330px;height:min(570px,72vh);
+  z-index:10;overflow:hidden;pointer-events:none;
+  mask-image:linear-gradient(transparent,#000 8%,#000 92%,transparent);
+  -webkit-mask-image:linear-gradient(transparent,#000 8%,#000 92%,transparent);
+}
+.recommendation-rail.left{left:18px}
+.recommendation-rail.right{right:18px}
+.recommendation-track{display:flex;flex-direction:column;gap:14px;animation:recommend-up 34s linear infinite}
+.recommendation-rail.right .recommendation-track{animation-name:recommend-down;animation-duration:39s}
+.recommendation-rail:hover .recommendation-track{animation-play-state:paused}
+.recommendation-card{
+  flex:0 0 auto;background:var(--card);border:1px solid var(--bd);border-radius:13px;
+  padding:14px;box-shadow:var(--shadow);color:var(--tx);pointer-events:auto
+}
+.recommendation-card .rec-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ac);font-weight:800}
+.recommendation-card h3{font-size:13px;line-height:1.35;margin:6px 0 2px}
+.recommendation-card .rec-meta{font-size:11px;color:var(--mu);margin:0 0 8px}
+.recommendation-card p{font-size:12px;line-height:1.5;color:var(--mu);margin:0}
+@keyframes recommend-up{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+@keyframes recommend-down{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+@media(max-width:1550px){.recommendation-rail{display:none}}
+@media(prefers-reduced-motion:reduce){.recommendation-track{animation:none!important}}
+
 </style>
 </head>
 <body>
+
+<!-- LinkedIn recommendations: replace each placeholder with a real recommendation
+     and the recommender's name, role, and relationship. Do not publish sample text as a real endorsement. -->
+<aside class="recommendation-rail left" aria-label="LinkedIn recommendations, scrolling upward">
+  <div class="recommendation-track">
+    <article class="recommendation-card">
+      <div class="rec-label">LinkedIn recommendation</div>
+      <h3>Punitkumar Tandel</h3>
+      <p class="rec-meta">Solution architect · Worked together at Numeris</p>
+      <p>I had the pleasure of working closely with Damanpreet on multiple projects and applications , and their technical expertise in AWS infrastructure and Cloud Operations was instrumental to our success.When a critical incident arose, Damanpreet stepped in with immediate, professional assistance. He rapidly diagnosed the issue, stabilized our environment, and established clear response protocols to resolve the incident with impressive turnaround time.Beyond incident management, Damanpreet built and streamlined our AWS deployment pipeline, greatly improving our team's deployment velocity and platform reliability. Their responsiveness, deep infrastructure knowledge, and calm demeanor under pressure make them an incredible asset to any engineering or cloud team. I would welcome the opportunity to work with Damanpreet again anytime.</p>
+    </article>
+    <article class="recommendation-card">
+      <div class="rec-label">LinkedIn recommendation</div>
+      <h3>Alexander Tkachenko</h3>
+      <p class="rec-meta">Senior Software Engineer · Numeris</p>
+      <p>I had a great experience working with Damanpreet on several complex AWS solutions involving Lambda, API Gateway, ELB, ECS, SQS, and other AWS services.He consistently demonstrated strong AWS infrastructure expertise, followed architectural best practices, and was always quick to respond when application or infrastructure issues arose. I was also impressed by his ability to learn new technologies quickly and turn that knowledge into practical solutions.Damanpreet is knowledgeable, dependable, and a great person to collaborate with. I highly recommend him.</p>
+    </article>
+    <article class="recommendation-card">
+      <div class="rec-label">LinkedIn recommendation</div>
+      <h3>Randy Kolenko</h3>
+      <p class="rec-meta">Creator of Maestro, the open source workflow engine and Senior Solutions Architect</p>
+      <p>I had the absolute pleasure of working with Damanpreet at Numeris where he led the IT team for incident support, AWS architecture and all of the deployment pipelines for our custom written business application.No matter what the issue was, Damanpreet was on it.  Coming up with solutions to problems that involved security, connectivity and accessibility.  Without Damanpreet's AWS knowledge, the site would not have been able to run nearly as good as it did, providing expert knowledge on AWS, SSO, networking, databases and multiple operating systems.I hope I have the opportunity to work with Damanpreet again in the future!  He's not only an exceptional AWS cloud architect, he's also an exceptional person.</p>
+    </article>
+    <!-- Duplicate the cards for a continuous vertical loop -->
+    <article class="recommendation-card">
+      <div class="rec-label">LinkedIn recommendation</div>
+      <h3>Punitkumar Tandel</h3>
+      <p class="rec-meta">Solution architect · Worked together at Numeris</p>
+      <p>I had the pleasure of working closely with Damanpreet on multiple projects and applications , and their technical expertise in AWS infrastructure and Cloud Operations was instrumental to our success.When a critical incident arose, Damanpreet stepped in with immediate, professional assistance. He rapidly diagnosed the issue, stabilized our environment, and established clear response protocols to resolve the incident with impressive turnaround time.Beyond incident management, Damanpreet built and streamlined our AWS deployment pipeline, greatly improving our team's deployment velocity and platform reliability. Their responsiveness, deep infrastructure knowledge, and calm demeanor under pressure make them an incredible asset to any engineering or cloud team. I would welcome the opportunity to work with Damanpreet again anytime.</p>
+    </article>
+    <article class="recommendation-card">
+      <div class="rec-label">LinkedIn recommendation</div>
+      <h3>Alexander Tkachenko</h3>
+      <p class="rec-meta">Senior Software Engineer · Numeris</p>
+      <p>I had a great experience working with Damanpreet on several complex AWS solutions involving Lambda, API Gateway, ELB, ECS, SQS, and other AWS services.He consistently demonstrated strong AWS infrastructure expertise, followed architectural best practices, and was always quick to respond when application or infrastructure issues arose. I was also impressed by his ability to learn new technologies quickly and turn that knowledge into practical solutions.Damanpreet is knowledgeable, dependable, and a great person to collaborate with. I highly recommend him.</p>
+    </article>
+    <article class="recommendation-card">
+      <div class="rec-label">LinkedIn recommendation</div>
+      <h3>Randy Kolenko</h3>
+      <p class="rec-meta">Creator of Maestro, the open source workflow engine and Senior Solutions Architect</p>
+      <p>I had the absolute pleasure of working with Damanpreet at Numeris where he led the IT team for incident support, AWS architecture and all of the deployment pipelines for our custom written business application.No matter what the issue was, Damanpreet was on it.  Coming up with solutions to problems that involved security, connectivity and accessibility.  Without Damanpreet's AWS knowledge, the site would not have been able to run nearly as good as it did, providing expert knowledge on AWS, SSO, networking, databases and multiple operating systems.I hope I have the opportunity to work with Damanpreet again in the future!  He's not only an exceptional AWS cloud architect, he's also an exceptional person.</p>
+    </article>
+  </div>
+</aside>
+<aside class="recommendation-rail right" aria-label="LinkedIn recommendations, scrolling downward">
+  <div class="recommendation-track">
+    <article class="recommendation-card">
+      <div class="rec-label">LinkedIn recommendation</div>
+      <h3>Punitkumar Tandel</h3>
+      <p class="rec-meta">Solution architect · Worked together at Numeris</p>
+      <p>I had the pleasure of working closely with Damanpreet on multiple projects and applications , and their technical expertise in AWS infrastructure and Cloud Operations was instrumental to our success.When a critical incident arose, Damanpreet stepped in with immediate, professional assistance. He rapidly diagnosed the issue, stabilized our environment, and established clear response protocols to resolve the incident with impressive turnaround time.Beyond incident management, Damanpreet built and streamlined our AWS deployment pipeline, greatly improving our team's deployment velocity and platform reliability. Their responsiveness, deep infrastructure knowledge, and calm demeanor under pressure make them an incredible asset to any engineering or cloud team. I would welcome the opportunity to work with Damanpreet again anytime.</p>
+    </article>
+    <article class="recommendation-card">
+      <div class="rec-label">LinkedIn recommendation</div>
+      <h3>Alexander Tkachenko</h3>
+      <p class="rec-meta">Senior Software Engineer · Numeris</p>
+      <p>I had a great experience working with Damanpreet on several complex AWS solutions involving Lambda, API Gateway, ELB, ECS, SQS, and other AWS services.He consistently demonstrated strong AWS infrastructure expertise, followed architectural best practices, and was always quick to respond when application or infrastructure issues arose. I was also impressed by his ability to learn new technologies quickly and turn that knowledge into practical solutions.Damanpreet is knowledgeable, dependable, and a great person to collaborate with. I highly recommend him.</p>
+    </article>
+    <article class="recommendation-card">
+      <div class="rec-label">LinkedIn recommendation</div>
+      <h3>Randy Kolenko</h3>
+      <p class="rec-meta">Creator of Maestro, the open source workflow engine and Senior Solutions Architect</p>
+      <p>I had the absolute pleasure of working with Damanpreet at Numeris where he led the IT team for incident support, AWS architecture and all of the deployment pipelines for our custom written business application.No matter what the issue was, Damanpreet was on it.  Coming up with solutions to problems that involved security, connectivity and accessibility.  Without Damanpreet's AWS knowledge, the site would not have been able to run nearly as good as it did, providing expert knowledge on AWS, SSO, networking, databases and multiple operating systems.I hope I have the opportunity to work with Damanpreet again in the future!  He's not only an exceptional AWS cloud architect, he's also an exceptional person.</p>
+    </article>
+  </div>
+</aside>
+
 <nav aria-label="Main navigation"><div class="w">
 <a href="#about">About</a><a href="#expertise">Expertise</a><a href="#experience">Experience</a><a href="#projects">Projects</a><a href="#impact">Impact</a><a href="#education">Education</a><a href="#contact">Contact</a>
 <span class="nav-spacer"></span><button class="theme" id="themeToggle" type="button">Dark mode</button>
