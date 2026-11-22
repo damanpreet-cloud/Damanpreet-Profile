@@ -1,22 +1,74 @@
-# 💫 About Me:
-🔭 I’m currently working on<br>Publishing AWS reference implementations: a multi-account landing zone, keyless GitHub Actions CI/CD, reusable Terraform modules, cost tooling and DR runbooks (see below). Previously focused on modernizing data pipelines on AWS with Terraform, EKS, Lambda, and Glue, moving away from legacy tools like NiFi.<br><br>👯 I’m looking to collaborate on<br>Cloud infrastructure projects, Kubernetes-based platforms, and data engineering workflows that involve scalable, production-grade systems.<br><br>🤝 I’m looking for help with<br>Optimizing large-scale Kubernetes workloads, improving CI/CD pipelines (especially GitHub Actions with self-hosted runners), and advanced AWS architecture patterns.<br><br>🌱 I’m currently learning<br>Advanced EKS setups, GPU workloads on Kubernetes, and improving performance of AI/ML pipelines using HuggingFace and LangChain.<br><br>💬 Ask me about<br>AWS, Terraform, Kubernetes (EKS), serverless architectures, data pipelines, or troubleshooting tricky infra issues.<br><br>💼 Open to opportunities<br>Cloud Solutions Architecture, Cloud Engineering, Cloud Security, Platform Engineering, Infrastructure Architecture and Hybrid Cloud.<br><br>⚡ Fun fact<br>I balance heavy gym training with deep dives into cloud architecture… lifting weights and lifting infrastructure at the same time.
+# Damanpreet Singh Chadha | Cloud Solutions Architect Portfolio
 
+A React + Vite portfolio designed for GitHub Pages, including a client-side Terraform destroy/restore simulation.
 
-## 🚀 Reference implementations:
-Built with placeholder names and account IDs. They are reference implementations, not copies of any employer's environment.
+## Important: simulator safety
 
-| Repo | What it shows |
-| --- | --- |
-| [aws-landing-zone-terraform](https://github.com/damanpreet-cloud/aws-landing-zone-terraform) | Multi-account AWS Organization with OUs, SCP guardrails, org CloudTrail and delegated security services |
-| [github-actions-oidc-aws](https://github.com/damanpreet-cloud/github-actions-oidc-aws) | Keyless GitHub Actions deployments with least-privilege roles and short-lived credentials |
-| [terraform-aws-modules](https://github.com/damanpreet-cloud/terraform-aws-modules) | Reusable VPC, EKS with IRSA, and IAM service-role modules |
-| [aws-cost-optimizer](https://github.com/damanpreet-cloud/aws-cost-optimizer) | Read-only Python CLI that finds idle and orphaned AWS resources and estimates monthly savings |
-| [aws-dr-resilience-toolkit](https://github.com/damanpreet-cloud/aws-dr-resilience-toolkit) | Multi-AZ failover test, AZ spread check, and DR runbooks |
-| [engineering-runbooks](https://github.com/damanpreet-cloud/engineering-runbooks) | Engineering runbooks |
+The Terraform Lifecycle Lab is a **visual simulation only**. It does not execute Terraform, call AWS APIs, run shell commands, or modify infrastructure. The terminal output and resource names are illustrative. The simulation resets when the page is refreshed.
 
+## Run locally
 
-## 🌐 Socials:
-[![Portfolio](https://img.shields.io/badge/Portfolio-damanpreet--cloud.github.io-0A66C2?logo=githubpages&logoColor=white)](https://damanpreet-cloud.github.io/Damanpreet-Profile/) [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://linkedin.com/in/damanpreet-singh-chadha) [![X](https://img.shields.io/badge/X-black.svg?logo=X&logoColor=white)](https://x.com/onlydaman) 
+Requirements: Node.js 20+ (Node.js 22 recommended).
 
-# 💻 Tech Stack:
-![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=plastic&logo=amazon-aws&logoColor=white) ![Azure](https://img.shields.io/badge/Azure-%230072C6.svg?style=plastic&logo=microsoftazure&logoColor=white) ![Google Cloud](https://img.shields.io/badge/Google%20Cloud-%234285F4.svg?style=plastic&logo=google-cloud&logoColor=white) ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=plastic&logo=terraform&logoColor=white) ![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=plastic&logo=kubernetes&logoColor=white) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=plastic&logo=docker&logoColor=white) ![Argo CD](https://img.shields.io/badge/Argo%20CD-EF7B4D?style=plastic&logo=argo&logoColor=white) ![Datadog](https://img.shields.io/badge/Datadog-632CA6?style=plastic&logo=datadog&logoColor=white) ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=plastic&logo=grafana&logoColor=white) ![PowerShell](https://img.shields.io/badge/PowerShell-%235391FE.svg?style=plastic&logo=powershell&logoColor=white) ![Linux](https://img.shields.io/badge/Linux-FCC624?style=plastic&logo=linux&logoColor=black) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=plastic&logo=html5&logoColor=white) ![Bash Script](https://img.shields.io/badge/bash_script-%23121011.svg?style=plastic&logo=gnu-bash&logoColor=white) ![PHP](https://img.shields.io/badge/php-%23777BB4.svg?style=plastic&logo=php&logoColor=white) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=plastic&logo=css3&logoColor=white) ![Python](https://img.shields.io/badge/python-3670A0?style=plastic&logo=python&logoColor=ffdd54) ![Windows Terminal](https://img.shields.io/badge/Windows%20Terminal-%234D4D4D.svg?style=plastic&logo=windows-terminal&logoColor=white) ![DigitalOcean](https://img.shields.io/badge/DigitalOcean-%230167ff.svg?style=plastic&logo=digitalOcean&logoColor=white) ![Linode](https://img.shields.io/badge/linode-00A95C?style=plastic&logo=linode&logoColor=white) ![Apache Airflow](https://img.shields.io/badge/Apache%20Airflow-017CEE?style=plastic&logo=Apache%20Airflow&logoColor=white) ![Jenkins](https://img.shields.io/badge/jenkins-%232C5263.svg?style=plastic&logo=jenkins&logoColor=white) ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=plastic&logo=nginx&logoColor=white) ![MicrosoftSQLServer](https://img.shields.io/badge/Microsoft%20SQL%20Server-CC2927?style=plastic&logo=microsoft%20sql%20server&logoColor=white) ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=plastic&logo=redis&logoColor=white) ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=plastic&logo=mariadb&logoColor=white) ![Firebase](https://img.shields.io/badge/firebase-a08021?style=plastic&logo=firebase&logoColor=ffcd34) ![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=plastic&logo=figma&logoColor=white) ![Adobe InDesign](https://img.shields.io/badge/Adobe%20InDesign-49021F?style=plastic&logo=adobeindesign&logoColor=FF3366) ![Adobe Premiere Pro](https://img.shields.io/badge/Adobe%20Premiere%20Pro-9999FF.svg?style=plastic&logo=Adobe%20Premiere%20Pro&logoColor=white) ![Adobe Illustrator](https://img.shields.io/badge/adobe%20illustrator-%23FF9A00.svg?style=plastic&logo=adobe%20illustrator&logoColor=white) ![GitLab CI](https://img.shields.io/badge/gitlab%20CI-%23181717.svg?style=plastic&logo=gitlab&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=plastic&logo=githubactions&logoColor=white) ![Bitbucket](https://img.shields.io/badge/bitbucket-%230047B3.svg?style=plastic&logo=bitbucket&logoColor=white) ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=plastic&logo=git&logoColor=white) ![GitLab](https://img.shields.io/badge/gitlab-%23181717.svg?style=plastic&logo=gitlab&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=plastic&logo=github&logoColor=white) ![Selenium](https://img.shields.io/badge/-selenium-%43B02A?style=plastic&logo=selenium&logoColor=white) ![Cisco](https://img.shields.io/badge/cisco-%23049fd9.svg?style=plastic&logo=cisco&logoColor=black) ![Ansible](https://img.shields.io/badge/ansible-%231A1918.svg?style=plastic&logo=ansible&logoColor=white) ![Jira](https://img.shields.io/badge/jira-%230A0FFF.svg?style=plastic&logo=jira&logoColor=white) ![Power Bi](https://img.shields.io/badge/power_bi-F2C811?style=plastic&logo=powerbi&logoColor=black) ![Ubiquiti](https://img.shields.io/badge/ubiquiti-%230559C9.svg?style=plastic&logo=ubiquiti&logoColor=white) ![WordPress](https://img.shields.io/badge/WordPress-%23117AC9.svg?style=plastic&logo=WordPress&logoColor=white) ![.Net](https://img.shields.io/badge/.NET-5C2D91?style=plastic&logo=.net&logoColor=white) ![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-000?style=plastic&logo=apachekafka) ![Apache Spark](https://img.shields.io/badge/Apache%20Spark-FDEE21?style=plastic&logo=apachespark&logoColor=black) ![Bootstrap](https://img.shields.io/badge/bootstrap-%238511FA.svg?style=plastic&logo=bootstrap&logoColor=white) ![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=plastic&logo=jquery&logoColor=white) ![Joomla](https://img.shields.io/badge/joomla-%235091CD.svg?style=plastic&logo=joomla&logoColor=white) ![Drupal](https://img.shields.io/badge/drupal-%230678BE.svg?style=plastic&logo=drupal&logoColor=white) ![Code-Igniter](https://img.shields.io/badge/CodeIgniter-%23EF4223.svg?style=plastic&logo=codeIgniter&logoColor=white)
+```bash
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite.
+
+## Build
+
+```bash
+npm run build
+npm run preview
+```
+
+The production site is generated in `dist/`.
+
+## Deploy to GitHub Pages
+
+This project is configured for:
+
+`https://damanpreet-cloud.github.io/Damanpreet-Profile/`
+
+1. Add these files to the existing `Damanpreet-Profile` repository.
+2. Commit and push to the `main` branch.
+3. In GitHub, open **Settings → Pages**.
+4. Under **Build and deployment**, select **GitHub Actions** as the source.
+5. Open the **Actions** tab and confirm that `Deploy portfolio to GitHub Pages` completes successfully.
+
+The workflow builds the site and publishes the `dist/` directory.
+
+## Before publishing: personalize these items
+
+Search the source for `YOUR_EMAIL_ADDRESS` and replace it with the professional email address you want displayed.
+
+Review `src/data.js` and `src/App.jsx` carefully:
+- Confirm role titles and company names.
+- Add accurate employment dates if desired.
+- Confirm every project description and outcome.
+- Add a resume PDF at `public/resume.pdf` only when you have the final version.
+- Add your own profile photo if you want one; the current hero uses a monogram, not a stock portrait.
+
+## GitHub Pages base path
+
+`vite.config.js` uses `/Damanpreet-Profile/` because this is a project site, not a user/organization root site. If you change the repository name, update `base` accordingly.
+
+## Structure
+
+```text
+src/
+  components/TerraformSimulator.jsx
+  App.jsx
+  data.js
+  main.jsx
+  styles.css
+.github/workflows/deploy.yml
+```
+
+## Notes
+
+- This is a static website. No backend or paid hosting is required.
+- Google Fonts are loaded from Google Fonts; if external font loading is blocked, system fallback fonts are used.
+- The deployment workflow uses GitHub Actions Pages artifacts.
