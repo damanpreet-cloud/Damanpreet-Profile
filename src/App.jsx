@@ -2,11 +2,11 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowDown, ArrowRight, ArrowUpRight, Award, BriefcaseBusiness, Check,
-  Cloud, Code2, Github, Linkedin, Mail, Menu, Network, ShieldCheck,
+  Cloud, Code2, Fingerprint, Github, LifeBuoy, Linkedin, Mail, Menu, Network, ShieldCheck,
   Terminal, Workflow, X, Zap
 } from "lucide-react";
 import TerraformSimulator from "./components/TerraformSimulator.jsx";
-import { expertise, experience, projects } from "./data.js";
+import { expertise, experience, projects, repos, recommendations, education } from "./data.js";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -19,7 +19,7 @@ function SectionTitle({ eyebrow, title, accent, description }) {
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const nav = ["About", "Expertise", "Experience", "Projects", "Simulator", "Contact"];
+  const nav = ["About", "Expertise", "Experience", "Projects", "Repos", "Simulator", "Contact"];
   const closeMenu = () => setMenuOpen(false);
 
   return (
@@ -72,14 +72,14 @@ function App() {
           <div className="about-grid">
             <div className="about-main">
               <p className="about-lead">I am an IT infrastructure and cloud architecture professional with <strong>18+ years of experience</strong> across enterprise networking, systems administration, hybrid infrastructure and public cloud.</p>
-              <p>My career has progressed from ISP and network engineering through systems administration and infrastructure leadership to cloud solution architecture. That breadth helps me connect architectural decisions to the realities of security, operations, reliability and cost.</p>
+              <p>My career has progressed from network engineering and Linux systems administration through infrastructure leadership to cloud solution architecture. That breadth helps me connect architectural decisions to the realities of security, operations, reliability and cost.</p>
               <p>My recent work has focused on AWS foundations, multi-account governance, private Kubernetes platforms, Terraform automation, CI/CD identity, cloud networking and production support for engineering teams.</p>
               <div className="about-callout"><Award size={20} /><div><strong>Outcome-oriented infrastructure</strong><span>Architecture that balances resilience, security, cost and operational supportability.</span></div></div>
             </div>
             <div className="about-stats">
               <div className="stat-card"><span>PROFESSIONAL EXPERIENCE</span><strong>18<span>+</span></strong><small>Years across IT & infrastructure</small></div>
               <div className="stat-card"><span>ENGINEERING ENABLEMENT</span><strong>5</strong><small>Engineering teams supported</small></div>
-              <div className="stat-card"><span>DOCUMENTED SAVINGS</span><strong>$200K<span>+</span></strong><small>Across multiple initiatives and periods</small></div>
+              <div className="stat-card"><span>CUMULATIVE SAVINGS</span><strong>$100K<span>+</span></strong><small>Contributed across optimization initiatives (not annual)</small></div>
             </div>
           </div>
         </section>
@@ -88,7 +88,7 @@ function App() {
           <SectionTitle eyebrow="02 / TECHNICAL EXPERTISE" title="The platforms behind" accent="the architecture." description="A practical mix of cloud engineering, enterprise infrastructure, automation and security." />
           <div className="expertise-grid">
             {expertise.map((group, index) => {
-              const Icon = [Cloud, Network, Code2, ShieldCheck][index];
+              const Icon = [Cloud, Network, Code2, ShieldCheck, Fingerprint, LifeBuoy][index];
               return <motion.div className="expertise-card" key={group.group} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
                 <div className="expertise-icon"><Icon size={21} /></div><h3>{group.group}</h3>
                 <div className="tag-list">{group.items.map((item) => <span key={item}>{item}</span>)}</div>
@@ -102,7 +102,7 @@ function App() {
           <div className="timeline">
             {experience.map((item, index) => <motion.div className="timeline-item" key={item.company + item.role} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
               <div className="timeline-marker">{String(index + 1).padStart(2, "0")}</div>
-              <div className="timeline-content"><span className="timeline-company">{item.company}</span><h3>{item.role}</h3><p>{item.detail}</p></div>
+              <div className="timeline-content"><span className="timeline-company">{item.company}</span><h3>{item.role}</h3>{item.dates && <span className="timeline-dates">{item.dates}</span>}<p>{item.detail}</p></div>
             </motion.div>)}
           </div>
         </section>
@@ -115,10 +115,23 @@ function App() {
               <span className="project-category">{project.category}</span>
               <h3>{project.title}</h3><p>{project.summary}</p>
               <div className="project-outcome"><Check size={15} /><span>{project.outcome}</span></div>
+              {project.repo && <a className="repo-link" href={`https://github.com/damanpreet-cloud/${project.repo}`} target="_blank" rel="noreferrer"><Github size={14} /> Reference repo: {project.repo} <ArrowUpRight size={13} /></a>}
               <div className="tag-list">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
             </article>)}
           </div>
-          <p className="content-note">Project descriptions are concise summaries. Detailed architecture diagrams and implementation specifics can be added as individual case studies.</p>
+          <p className="content-note">These cards summarize work I supported in my roles. Linked repositories are separate reference implementations built with placeholder names, not copies of any employer’s environment.</p>
+        </section>
+
+        <section className="section section-wrap" id="repos">
+          <SectionTitle eyebrow="05 / REFERENCE IMPLEMENTATIONS" title="Code you can" accent="read and run." description="Built with placeholder names and account IDs. They show how I approach landing zones, keyless CI/CD, reusable modules, cost, resilience and AI agent safety." />
+          <div className="repo-grid">
+            {repos.map((repo) => <a className="repo-card" key={repo.name} href={`https://github.com/damanpreet-cloud/${repo.name}`} target="_blank" rel="noreferrer">
+              <div className="repo-top"><Github size={16} /><span>{repo.name}</span><ArrowUpRight size={15} /></div>
+              {repo.personal && <span className="repo-badge">PERSONAL PROJECT</span>}
+              <p>{repo.summary}</p>
+              <div className="tag-list">{repo.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+            </a>)}
+          </div>
         </section>
 
         <section className="section section-wrap architecture-band">
@@ -130,22 +143,39 @@ function App() {
 
         <TerraformSimulator />
 
+        <section className="section section-wrap" id="references">
+          <SectionTitle eyebrow="06 / REFERENCES" title="What colleagues" accent="say." description="LinkedIn recommendations from people I worked with at Numeris." />
+          <div className="quote-grid">
+            {recommendations.map((r) => <figure className="quote-card" key={r.name}>
+              <blockquote>{r.text}</blockquote>
+              <figcaption><strong>{r.name}</strong><span>{r.role}</span></figcaption>
+            </figure>)}
+          </div>
+        </section>
+
+        <section className="section section-wrap" id="education">
+          <SectionTitle eyebrow="07 / EDUCATION" title="Education &" accent="credentials." />
+          <ul className="edu-list">
+            {education.map((e) => <li key={e.title}><div><strong>{e.title}</strong><span>{e.detail}</span></div><small>{e.year}</small></li>)}
+          </ul>
+        </section>
+
         <section className="section section-wrap contact-section" id="contact">
           <div className="contact-panel">
             <span className="eyebrow">LET'S CONNECT</span>
             <h2>Have a cloud challenge<br /><span className="gradient-text">worth solving?</span></h2>
             <p>I'm interested in AWS Cloud Engineer, Cloud Solutions Architect and infrastructure engineering opportunities across Ontario.</p>
             <div className="contact-actions">
-              <a className="button button-primary" href="mailto:YOUR_EMAIL_ADDRESS"> <Mail size={16} /> Email me</a>
+              <a className="button button-primary" href="mailto:only.daman@gmail.com"><Mail size={16} /> Email me</a>
               <a className="button button-outline" href="https://www.linkedin.com/in/damanpreet-singh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> LinkedIn <ArrowUpRight size={14} /></a>
               <a className="button button-outline" href="https://github.com/damanpreet-cloud" target="_blank" rel="noreferrer"><Github size={16} /> GitHub <ArrowUpRight size={14} /></a>
             </div>
-            <small className="contact-edit-note">Before publishing: replace YOUR_EMAIL_ADDRESS with your preferred professional email.</small>
+            <small className="contact-edit-note">only.daman@gmail.com · Kitchener, Ontario, Canada</small>
           </div>
         </section>
       </main>
 
-      <footer className="site-footer section-wrap"><a href="#home" className="brand"><span className="brand-mark">DS</span><span>DAMANPREET<span className="brand-dot">.</span></span></a><span>Designed to communicate engineering, not just list technologies.</span><a href="#home" className="back-top">BACK TO TOP ↑</a></footer>
+      <footer className="site-footer section-wrap"><a href="#home" className="brand"><span className="brand-mark">DS</span><span>DAMANPREET<span className="brand-dot">.</span></span></a><span>Kitchener, Ontario, Canada · Cloud, Security &amp; Enterprise Infrastructure</span><a href="#home" className="back-top">BACK TO TOP ↑</a></footer>
     </div>
   );
 }
