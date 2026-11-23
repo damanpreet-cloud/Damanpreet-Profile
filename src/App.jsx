@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import {
   ArrowDown, ArrowRight, ArrowUpRight, Award, BriefcaseBusiness, Check,
   Cloud, Code2, Fingerprint, Github, Home, LifeBuoy, Linkedin, Mail, Network, ShieldCheck,
-  Terminal, Workflow, Zap, ChevronDown
+  Terminal, Workflow, Zap, ChevronDown, Download, FileText
 } from "lucide-react";
 import SimulationLab from "./components/SimulationLab.jsx";
-import { expertise, experience, projects, repos, recommendations, education, highlights } from "./data.js";
+import { expertise, experience, projects, repos, recommendations, education, certifications, learningCredentials, architectureTraining, highlights } from "./data.js";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -124,6 +124,51 @@ function TabBar() {
   );
 }
 
+// Resume button only appears when public/resume.pdf exists at build time (see vite.config.js).
+const hasResume = typeof __HAS_RESUME__ !== "undefined" && __HAS_RESUME__;
+const resumeHref = `${import.meta.env.BASE_URL}resume.pdf`;
+
+function CaseStudy({ items }) {
+  return (
+    <dl className="case-grid">
+      {items.map((item) => <div key={item.label}><dt>{item.label}</dt><dd>{item.text}</dd></div>)}
+    </dl>
+  );
+}
+
+function ProjectCard({ project }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <article className={open ? "project-card open" : "project-card"}>
+      <div className="project-top"><span>{project.number} / WORK EXPERIENCE</span><ArrowUpRight size={17} /></div>
+      <span className="project-category">{project.category}</span>
+      <h3>{project.title}</h3><p>{project.summary}</p>
+      <div className="project-outcome"><Check size={15} /><span>{project.outcome}</span></div>
+      {project.caseStudy && (
+        <>
+          <button type="button" className="case-toggle" aria-expanded={open} onClick={() => setOpen((v) => !v)}>{open ? "Hide case study" : "Read the case study"}<ChevronDown size={14} /></button>
+          {open && <CaseStudy items={project.caseStudy} />}
+        </>
+      )}
+      {project.repo && <a className="repo-link" href={`https://github.com/damanpreet-cloud/${project.repo}`} target="_blank" rel="noreferrer"><Github size={14} /> Reference implementation: {project.repo} <ArrowUpRight size={13} /></a>}
+      <div className="tag-list">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+    </article>
+  );
+}
+
+function CredentialGroup({ title, note, items }) {
+  if (!items.length) return null;
+  return (
+    <div className="cred-group">
+      <h3>{title}</h3>
+      {note && <p className="cred-note">{note}</p>}
+      <ul className="edu-list">
+        {items.map((e) => <li key={e.title}><div><strong>{e.title}</strong><span>{e.detail}</span></div><small>{e.year}</small></li>)}
+      </ul>
+    </div>
+  );
+}
+
 function App() {
   const nav = ["About", "Expertise", "Experience", "Projects", "Repos", "Simulator", "Contact"];
 
@@ -149,8 +194,9 @@ function App() {
               <h2>Cloud Solutions Architect <span className="hero-separator">/</span> AWS Engineer</h2>
               <p className="hero-description">I design, secure and modernize enterprise infrastructure across AWS, hybrid cloud, networking and automation. I bring an engineering-first approach to building platforms that teams can operate with confidence.</p>
               <div className="hero-actions">
-                <a className="button button-primary" href="#projects">Explore my work <ArrowRight size={16} /></a>
-                <a className="button button-outline" href="#contact">Get in touch <Mail size={16} /></a>
+                {hasResume && <a className="button button-primary" href={resumeHref} download="Damanpreet-Singh-Chadha-Resume.pdf"><Download size={16} /> Download Resume</a>}
+                <a className={hasResume ? "button button-outline" : "button button-primary"} href="https://www.linkedin.com/in/damanpreet-singh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> View LinkedIn</a>
+                <a className="button button-outline" href="#projects">Explore Technical Projects <ArrowRight size={16} /></a>
               </div>
               <div className="hero-proof">
                 <div><strong>18+</strong><span>Years in IT</span></div>
@@ -216,16 +262,9 @@ function App() {
         <section className="section section-wrap" id="projects">
           <SectionTitle eyebrow="04 / SELECTED WORK" title="Practical architecture." accent="Real-world outcomes." description="Representative initiatives from cloud infrastructure, platform engineering, security and modernization work." />
           <div className="project-grid">
-            {projects.map((project) => <article className="project-card" key={project.number}>
-              <div className="project-top"><span>{project.number} / CASE STUDY</span><ArrowUpRight size={17} /></div>
-              <span className="project-category">{project.category}</span>
-              <h3>{project.title}</h3><p>{project.summary}</p>
-              <div className="project-outcome"><Check size={15} /><span>{project.outcome}</span></div>
-              {project.repo && <a className="repo-link" href={`https://github.com/damanpreet-cloud/${project.repo}`} target="_blank" rel="noreferrer"><Github size={14} /> Reference repo: {project.repo} <ArrowUpRight size={13} /></a>}
-              <div className="tag-list">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-            </article>)}
+            {projects.map((project) => <ProjectCard project={project} key={project.number} />)}
           </div>
-          <p className="content-note">These cards summarize work I supported in my roles. Linked repositories are separate reference implementations built with placeholder names, not copies of any employer’s environment.</p>
+          <p className="content-note">Each project card describes work I did or supported in my roles. Linked repositories are my own separate reference implementations, built with placeholder names and not copies of any employer’s environment. The Simulation Lab below is a conceptual demonstration.</p>
         </section>
 
         <section className="section section-wrap" id="repos">
@@ -233,7 +272,7 @@ function App() {
           <div className="repo-grid">
             {repos.map((repo) => <a className="repo-card" key={repo.name} href={`https://github.com/damanpreet-cloud/${repo.name}`} target="_blank" rel="noreferrer">
               <div className="repo-top"><Github size={16} /><span>{repo.name}</span><ArrowUpRight size={15} /></div>
-              {repo.personal && <span className="repo-badge">PERSONAL PROJECT</span>}
+              <span className="repo-badge">{repo.personal ? "PERSONAL PROJECT" : "REFERENCE IMPLEMENTATION"}</span>
               <p>{repo.summary}</p>
               <div className="tag-list">{repo.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
             </a>)}
@@ -255,10 +294,11 @@ function App() {
         </section>
 
         <section className="section section-wrap" id="education">
-          <SectionTitle eyebrow="07 / EDUCATION" title="Education &" accent="credentials." />
-          <ul className="edu-list">
-            {education.map((e) => <li key={e.title}><div><strong>{e.title}</strong><span>{e.detail}</span></div><small>{e.year}</small></li>)}
-          </ul>
+          <SectionTitle eyebrow="07 / EDUCATION" title="Education &" accent="credentials." description="Degrees, passed certification exams, learning credentials and training are listed separately." />
+          <CredentialGroup title="Education" items={education} />
+          <CredentialGroup title="Professional certifications" note="Examinations successfully passed." items={certifications} />
+          <CredentialGroup title="Cloud learning credentials" note="AWS and Google Cloud training badges. These are not certification exams." items={learningCredentials} />
+          <CredentialGroup title="Architecture training" note="Training completed, not a certification." items={architectureTraining} />
         </section>
 
         <section className="section section-wrap contact-section" id="contact">
@@ -268,6 +308,7 @@ function App() {
             <p>I'm interested in AWS Cloud Engineer, Cloud Solutions Architect and infrastructure engineering opportunities across Ontario.</p>
             <div className="contact-actions">
               <a className="button button-primary" href="mailto:only.daman@gmail.com"><Mail size={16} /> Email me</a>
+              {hasResume && <a className="button button-outline" href={resumeHref} download="Damanpreet-Singh-Chadha-Resume.pdf"><FileText size={16} /> Resume</a>}
               <a className="button button-outline" href="https://www.linkedin.com/in/damanpreet-singh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> LinkedIn <ArrowUpRight size={14} /></a>
               <a className="button button-outline" href="https://github.com/damanpreet-cloud" target="_blank" rel="noreferrer"><Github size={16} /> GitHub <ArrowUpRight size={14} /></a>
             </div>

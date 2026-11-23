@@ -146,3 +146,39 @@
 .az-track{margin:0}
 .az-pct{font:9px var(--mono);color:#8e9eb5;min-width:30px;text-align:right}
 @media(max-width:900px){.sim-control-pane .field,.sim-control-pane .claim-box,.sim-control-pane .action-list,.sim-control-pane .tally,.sim-control-pane .az-list{grid-column:span 2}.scenario-brief{padding:15px}}
+
+
+/* ===== Review fixes ===== */
+.kind-badge{display:inline-block;margin-bottom:10px;font:700 8px var(--mono);letter-spacing:1.1px;padding:4px 8px;border-radius:4px}
+.kind-badge.concept{color:#edc46a;border:1px solid rgba(237,196,106,.35);background:rgba(237,196,106,.07)}
+.scenario-brief strong{display:block}
+.project-card.open{grid-column:1/-1}
+.case-toggle{display:inline-flex;align-items:center;gap:7px;margin:14px 0 4px;min-height:40px;padding:0;background:none;border:0;color:var(--cyan);font:600 12px var(--mono);cursor:pointer;touch-action:manipulation}
+.project-card.open .case-toggle svg{transform:rotate(180deg)}
+.case-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:10px 0 14px}
+.case-grid>div{padding:12px 14px;border:1px solid var(--line);border-radius:9px;background:rgba(8,13,24,.55)}
+.case-grid dt{margin-bottom:6px;font:700 9px var(--mono);letter-spacing:1px;color:var(--cyan);text-transform:uppercase}
+.case-grid dd{margin:0;color:#b4c1d3;font-size:12px;line-height:1.7}
+.cred-group{margin-bottom:28px}
+.cred-group h3{margin:0 0 4px;font:700 13px var(--mono);letter-spacing:.8px;color:#dbe4f2}
+.cred-note{margin:0 0 12px;color:#8393ab;font-size:11px}
+.sim-note{margin:6px 0 10px;font-size:10px;line-height:1.7;color:#7f90a8}
+.two-lane{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 4px}
+.two-lane>div{display:grid;gap:3px;padding:11px;border:1px solid var(--line);border-radius:9px}
+.two-lane span{font:8px var(--mono);letter-spacing:1px;color:#7f90a8}
+.two-lane strong{font:600 11px var(--mono);color:#dbe4f2;text-transform:capitalize}
+.two-lane small{font-size:9px;color:#74869e}
+.copy-button{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:32px;min-height:32px}
+.copy-toast{position:absolute;right:0;top:calc(100% + 6px);padding:4px 8px;border-radius:6px;background:#122036;border:1px solid var(--line);color:#cfe;font:9px var(--mono);white-space:nowrap;z-index:5}
+.environment-status.planned{border-color:rgba(99,230,226,.22);background:rgba(99,230,226,.05)}
+.environment-status.planned .status-icon{color:#63e6e2}
+.resource-indicator.planned{background:transparent;border:1px dashed #7b93b0}
+.hero-actions{flex-wrap:wrap}
+.hero-actions .button{white-space:normal;text-align:center;justify-content:center}
+@media(max-width:900px){
+  .sim-control-pane .sim-note,.sim-control-pane .two-lane{grid-column:span 2}
+}
+@media(max-width:650px){
+  .case-grid{grid-template-columns:1fr}
+  .hero-actions>:first-child:nth-last-child(3){grid-column:1/-1}
+}

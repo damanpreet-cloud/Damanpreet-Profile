@@ -27,7 +27,13 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            echo "package-lock.json not found, falling back to npm install"
+            npm install
+          fi
 
       - name: Build website
         run: npm run build

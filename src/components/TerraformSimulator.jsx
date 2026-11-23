@@ -1,16 +1,27 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  AlertTriangle, CheckCircle2, Cloud, Copy, RotateCcw, ShieldCheck,
+  AlertTriangle, Cloud, FileCheck2, Play, RotateCcw, ShieldCheck,
   Terminal as TerminalIcon, Trash2, Zap
 } from "lucide-react";
+import CopyButton from "./CopyButton.jsx";
 
 const initialLines = [
   { tone: "muted", text: "# Terraform lifecycle console · SIMULATION ONLY" },
   { tone: "command", text: "$ terraform plan" },
-  { tone: "normal", text: "Planning infrastructure changes..." },
   { tone: "success", text: "Plan: 4 to add, 0 to change, 0 to destroy." },
-  { tone: "muted", text: "No cloud provider is connected. No resources exist." }
+  { tone: "muted", text: "No cloud provider is connected and nothing is provisioned yet." },
+  { tone: "muted", text: "Run apply to simulate provisioning." }
+];
+
+const resources = ["IAM execution role", "S3 website bucket", "CloudFront distribution", "Route 53 record"];
+
+const applySteps = [
+  "aws_iam_role.portfolio: Creating...",
+  "aws_s3_bucket.portfolio: Creating...",
+  "aws_cloudfront_distribution.portfolio: Creating...",
+  "aws_route53_record.portfolio: Creating...",
+  "Apply complete! Resources: 4 added, 0 changed, 0 destroyed."
 ];
 
 const destroySteps = [
@@ -21,52 +32,76 @@ const destroySteps = [
   "Destroy complete! Resources: 4 destroyed."
 ];
 
-const restoreSteps = [
-  "aws_iam_role.portfolio: Creating...",
-  "aws_s3_bucket.portfolio: Creating...",
-  "aws_cloudfront_distribution.portfolio: Creating...",
-  "aws_route53_record.portfolio: Creating...",
-  "Apply complete! Resources: 4 added, 0 changed, 0 destroyed."
-];
+const statusInfo = {
+  PLANNED: { label: "PLAN READY", note: "Nothing provisioned yet", cls: "planned" },
+  APPLYING: { label: "APPLYING", note: "Provisioning in progress", cls: "restoring" },
+  ACTIVE: { label: "ACTIVE", note: "Environment available", cls: "active" },
+  DESTROYING: { label: "DESTROYING", note: "Teardown in progress", cls: "destroying" },
+  DESTROYED: { label: "DESTROYED", note: "Simulated resources removed", cls: "destroyed" }
+};
 
 export default function TerraformSimulator() {
-  const [state, setState] = useState("ACTIVE");
+  const [state, setState] = useState("PLANNED");
   const [lines, setLines] = useState(initialLines);
   const [confirm, setConfirm] = useState(false);
   const [step, setStep] = useState(0);
-  const [sound, setSound] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const terminalRef = useRef(null);
 
-  const isBusy = state === "DESTROYING" || state === "RESTORING";
-  const progress = useMemo(() => {
-    if (state === "ACTIVE") return 100;
-    if (state === "DESTROYED") return 0;
-    return Math.min(100, Math.round((step / 5) * 100));
-  }, [state, step]);
+  const isBusy = state === "APPLYING" || state === "DESTROYING";
+  const info = statusInfo[state];
 
+  // Each tick logs one message. All state changes happen in this timer callback,
+  // never inside a state-updater function, so it is safe under React Strict Mode.
   useEffect(() => {
-    if (!isBusy) return;
-    const sequence = state === "DESTROYING" ? destroySteps : restoreSteps;
-    const timer = window.setInterval(() => {
-      setStep((current) => {
-        const next = current + 1;
-        if (next >= sequence.length) {
-          window.clearInterval(timer);
-          setLines((old) => [...old, { tone: state === "DESTROYING" ? "danger" : "success", text: sequence[sequence.length - 1] }]);
-          setState(state === "DESTROYING" ? "DESTROYED" : "ACTIVE");
-          return sequence.length;
-        }
-        setLines((old) => [...old, { tone: "normal", text: sequence[current] }]);
-        return next;
-      });
+    if (!isBusy) return undefined;
+    const sequence = state === "APPLYING" ? applySteps : destroySteps;
+    const timer = window.setTimeout(() => {
+      const isLast = step === sequence.length - 1;
+      const tone = isLast ? (state === "APPLYING" ? "success" : "danger") : "normal";
+      setLines((old) => [...old, { tone, text: sequence[step] }]);
+      if (isLast) {
+        setState(state === "APPLYING" ? "ACTIVE" : "DESTROYED");
+        setStep(0);
+      } else {
+        setStep(step + 1);
+      }
     }, 850);
-    return () => window.clearInterval(timer);
-  }, [state, isBusy]);
+    return () => window.clearTimeout(timer);
+  }, [state, step, isBusy]);
 
   useEffect(() => {
     if (terminalRef.current) terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
   }, [lines]);
+
+  // Deployment progress = share of the four resources currently deployed.
+  const progress = useMemo(() => {
+    if (state === "ACTIVE") return 100;
+    if (state === "PLANNED" || state === "DESTROYED") return 0;
+    const done = Math.max(0, Math.min(4, step - 1));
+    return state === "APPLYING" ? Math.round((done / 4) * 100) : 100 - Math.round((done / 4) * 100);
+  }, [state, step]);
+
+  const rowStatus = (index) => {
+    if (state === "ACTIVE") return "ready";
+    if (state === "PLANNED") return "planned";
+    if (state === "DESTROYED") return "removed";
+    if (state === "APPLYING") {
+      if (step - 1 > index) return "ready";
+      return step - 1 === index ? "creating" : "planned";
+    }
+    const order = 3 - index; // destroy runs in reverse order
+    if (step - 1 > order) return "removed";
+    return step - 1 === order ? "removing" : "ready";
+  };
+  const indicator = { ready: "on", planned: "planned", removed: "off", creating: "changing", removing: "changing" };
+  const rowLabel = { ready: "READY", planned: "PLANNED", removed: "REMOVED", creating: "CREATING", removing: "REMOVING" };
+
+  const startApply = () => {
+    setStep(0);
+    setState("APPLYING");
+    setLines((old) => [...old, { tone: "command", text: "$ terraform apply -auto-approve" }, { tone: "warning", text: "Simulation started. Provisioning illustrative resources..." }]);
+  };
 
   const startDestroy = () => {
     setConfirm(false);
@@ -75,26 +110,11 @@ export default function TerraformSimulator() {
     setLines((old) => [...old, { tone: "command", text: "$ terraform destroy" }, { tone: "warning", text: "Simulation started. Destroying illustrative resources..." }]);
   };
 
-  const startRestore = () => {
-    setStep(0);
-    setState("RESTORING");
-    setLines((old) => [...old, { tone: "command", text: "$ terraform apply -auto-approve" }, { tone: "warning", text: "Simulation started. Recreating illustrative resources..." }]);
-  };
-
   const reset = () => {
-    setState("ACTIVE");
+    setState("PLANNED");
     setStep(0);
     setConfirm(false);
     setLines(initialLines);
-  };
-
-  const copyLog = async () => {
-    const text = lines.map((line) => line.text).join("\n");
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      // Clipboard access can be unavailable in some browser contexts.
-    }
   };
 
   return (
@@ -103,7 +123,7 @@ export default function TerraformSimulator() {
         <div className="sim-topbar">
           <div className="window-controls"><i /><i /><i /></div>
           <div className="terminal-title"><TerminalIcon size={14} /> infrastructure-control / terraform</div>
-          <button className="icon-button" onClick={copyLog} aria-label="Copy terminal log" title="Copy terminal log"><Copy size={15} /></button>
+          <CopyButton getText={() => lines.map((line) => line.text).join("\n")} />
         </div>
 
         <div className="sim-grid">
@@ -111,9 +131,7 @@ export default function TerraformSimulator() {
             <div className="terminal-meta"><span>TERMINAL OUTPUT</span><span>bash · read-only simulation</span></div>
             <div className="terminal-output" ref={terminalRef} aria-live="polite">
               {lines.map((line, index) => (
-                <div className={`terminal-line ${line.tone}`} key={`${index}-${line.text}`}>
-                  {line.text}
-                </div>
+                <div className={`terminal-line ${line.tone}`} key={`${index}-${line.text}`}>{line.text}</div>
               ))}
               {isBusy && <div className="terminal-line cursor-line">▌</div>}
             </div>
@@ -122,27 +140,30 @@ export default function TerraformSimulator() {
 
           <aside className="sim-control-pane">
             <div className="control-heading"><Cloud size={18} /><span>ENVIRONMENT STATUS</span></div>
-            <div className={`environment-status ${state.toLowerCase()}`}>
+            <div className={`environment-status ${info.cls}`}>
               <div className="status-icon">
-                {state === "DESTROYED" ? <Trash2 size={22} /> : state === "DESTROYING" ? <Zap size={22} /> : state === "RESTORING" ? <RotateCcw size={22} /> : <ShieldCheck size={22} />}
+                {state === "PLANNED" ? <FileCheck2 size={22} /> : state === "DESTROYED" ? <Trash2 size={22} /> : state === "DESTROYING" ? <Zap size={22} /> : state === "APPLYING" ? <RotateCcw size={22} /> : <ShieldCheck size={22} />}
               </div>
-              <div><strong>{state}</strong><small>{state === "ACTIVE" ? "Environment available" : state === "DESTROYED" ? "Simulated resources removed" : state === "DESTROYING" ? "Teardown in progress" : "Provisioning in progress"}</small></div>
+              <div><strong>{info.label}</strong><small>{info.note}</small></div>
             </div>
-            <div className="progress-label"><span>Lifecycle progress</span><strong>{progress}%</strong></div>
+            <div className="progress-label"><span>Deployment progress</span><strong>{progress}%</strong></div>
             <div className="progress-track"><motion.div className="progress-fill" animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }} /></div>
             <div className="resource-list">
-              {["IAM execution role", "S3 website bucket", "CloudFront distribution", "Route 53 record"].map((resource) => (
-                <div className="resource-row" key={resource}>
-                  <span className={`resource-indicator ${state === "DESTROYED" ? "off" : state === "DESTROYING" && step > 0 ? "changing" : state === "RESTORING" && step > 0 ? "changing" : "on"}`} />
-                  <span>{resource}</span>
-                  <small>{state === "DESTROYED" ? "REMOVED" : state === "RESTORING" && step > 0 ? "CREATING" : state === "DESTROYING" && step > 0 ? "REMOVING" : "READY"}</small>
-                </div>
-              ))}
+              {resources.map((resource, index) => {
+                const status = rowStatus(index);
+                return (
+                  <div className="resource-row" key={resource}>
+                    <span className={`resource-indicator ${indicator[status]}`} />
+                    <span>{resource}</span>
+                    <small>{rowLabel[status]}</small>
+                  </div>
+                );
+              })}
             </div>
             <div className="sim-actions">
+              {(state === "PLANNED" || state === "DESTROYED") && <button className="button button-primary button-full" onClick={startApply}><Play size={15} /> {state === "PLANNED" ? "terraform apply" : "terraform apply / restore"}</button>}
               {state === "ACTIVE" && <button className="button button-danger button-full" onClick={() => setConfirm(true)}><Trash2 size={16} /> terraform destroy</button>}
-              {state === "DESTROYED" && <button className="button button-primary button-full" onClick={startRestore}><RotateCcw size={16} /> terraform apply / restore</button>}
-              {isBusy && <button className="button button-muted button-full" disabled><span className="spinner" /> {state === "DESTROYING" ? "Destroying resources..." : "Restoring resources..."}</button>}
+              {isBusy && <button className="button button-muted button-full" disabled><span className="spinner" /> {state === "DESTROYING" ? "Destroying resources..." : "Provisioning resources..."}</button>}
               <button className="button button-quiet button-full" onClick={reset} disabled={isBusy}><RotateCcw size={14} /> Reset simulation</button>
             </div>
             <button className="help-toggle" onClick={() => setShowHelp((v) => !v)}>{showHelp ? "Hide" : "How this works"}</button>

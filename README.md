@@ -1,10 +1,10 @@
 # Damanpreet Singh Chadha | Cloud Solutions Architect Portfolio
 
-A React + Vite portfolio designed for GitHub Pages, including a client-side Terraform destroy/restore simulation.
+A React + Vite portfolio designed for GitHub Pages, with an interactive Simulation Lab (Terraform lifecycle, keyless CI/CD, organization guardrails and AZ failover).
 
 ## Important: simulator safety
 
-The Terraform Lifecycle Lab is a **visual simulation only**. It does not execute Terraform, call AWS APIs, run shell commands, or modify infrastructure. The terminal output and resource names are illustrative. The simulation resets when the page is refreshed.
+Everything in the Simulation Lab is a **visual simulation only**. It does not execute Terraform, call AWS or GitHub APIs, run shell commands, or modify infrastructure. Terminal output, trust policies, SCP results and failover timings are illustrative. The simulations reset when the page is refreshed.
 
 ## Run locally
 
@@ -40,16 +40,14 @@ This project is configured for:
 
 The workflow builds the site and publishes the `dist/` directory.
 
-## Before publishing: personalize these items
+## Before publishing: checklist
 
-Search the source for `YOUR_EMAIL_ADDRESS` and replace it with the professional email address you want displayed.
-
-Review `src/data.js` and `src/App.jsx` carefully:
-- Confirm role titles and company names.
-- Add accurate employment dates if desired.
-- Confirm every project description and outcome.
-- Add a resume PDF at `public/resume.pdf` only when you have the final version.
-- Add your own profile photo if you want one; the current hero uses a monogram, not a stock portrait.
+1. **Resume.** Save your final resume as `public/resume.pdf`. The *Download Resume* button appears automatically when that file exists, and is hidden when it does not. Do not publish an outdated resume.
+2. **Lock file.** Run `npm install` once locally and commit the generated `package-lock.json`. The deploy workflow uses `npm ci` when the lock file exists.
+3. **Certifications.** `certifications` in `src/data.js` is empty. Add only exams you have passed; the section stays hidden until you do.
+4. **SFTP cost figures.** When you can verify the monthly cost before and after, add a "Financial impact" line to the SFTP case study in `src/data.js`.
+5. **Savings claim.** The `$100K+` figure is cumulative, not annual. Keep it conservative and be ready to explain which initiatives it includes.
+6. **Content review.** Confirm role titles, dates, the four case studies and every project outcome in `src/data.js`.
 
 ## GitHub Pages base path
 
@@ -58,8 +56,9 @@ Review `src/data.js` and `src/App.jsx` carefully:
 ## Structure
 
 ```text
+public/            resume.pdf (add), og-image.png, icon, manifest
 src/
-  components/TerraformSimulator.jsx
+  components/SimulationLab.jsx, TerraformSimulator.jsx, CopyButton.jsx
   App.jsx
   data.js
   main.jsx

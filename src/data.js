@@ -48,6 +48,14 @@ export const projects = [
     category: "AWS • Storage • Cost optimization",
     summary: "Modernized a legacy EC2-based FTP/FTPS/SFTP pattern toward AWS Transfer Family and S3, using vendor-isolated prefixes, IAM roles and lifecycle controls.",
     outcome: "Reduced recurring infrastructure cost substantially while reducing server patching and maintenance overhead.",
+    caseStudy: [
+      { label: "Problem", text: "A legacy EC2-based FTP/FTPS/SFTP pattern that required ongoing server patching and maintenance." },
+      { label: "Architecture", text: "AWS Transfer Family in front of Amazon S3, with IAM roles for access and S3 lifecycle policies for retention." },
+      { label: "Security", text: "Vendor-isolated S3 prefixes and controlled, role-based access so each vendor reaches only its own data." },
+      { label: "Operations", text: "Removed the self-managed servers, which reduced patching and routine maintenance overhead." },
+      // Add { label: "Financial impact", text: "Monthly cost before: $X · after: $Y" } here once the figures are verified.
+      { label: "My contribution", text: "Architecture, implementation and operational support." }
+    ],
     tags: ["AWS Transfer Family", "Amazon S3", "IAM", "Lifecycle policies"]
   },
   {
@@ -56,6 +64,13 @@ export const projects = [
     category: "AWS Organizations • Security",
     summary: "Supported an eight-account AWS Organization using Control Tower and Service Control Policies, with shared governance and account-level guardrails.",
     outcome: "A more consistent foundation for account provisioning, security controls and operational ownership.",
+    caseStudy: [
+      { label: "Problem", text: "Multiple AWS accounts needed consistent provisioning, security controls and clear operational ownership." },
+      { label: "Architecture", text: "An eight-account AWS Organization using Control Tower, organizational units, Service Control Policies and IAM Identity Center." },
+      { label: "Security", text: "Account-level guardrails applied through SCPs, with shared governance across accounts." },
+      { label: "Operations", text: "A more predictable path for new accounts and a clearer split of responsibility between teams." },
+      { label: "My contribution", text: "Supported governance and guardrail work. The linked repository is my separate reference implementation." }
+    ],
     tags: ["Control Tower", "Organizations", "SCPs", "IAM Identity Center"],
     repo: "aws-landing-zone-terraform"
   },
@@ -65,6 +80,13 @@ export const projects = [
     category: "EKS • Terraform • GitOps",
     summary: "Worked on private EKS environments, reusable Terraform patterns, Argo CD delivery, workload autoscaling and supporting network and storage integrations.",
     outcome: "Repeatable platform foundations for engineering teams and controlled workload delivery.",
+    caseStudy: [
+      { label: "Problem", text: "Engineering teams needed repeatable, controlled foundations for running workloads on Kubernetes." },
+      { label: "Architecture", text: "Private EKS clusters built from reusable Terraform patterns (VPC, EKS with IRSA, IAM service roles), with Argo CD for GitOps delivery." },
+      { label: "Security", text: "Private cluster networking and IAM roles for service accounts, so workloads get scoped AWS permissions." },
+      { label: "Operations", text: "Workload autoscaling plus supporting network and storage integrations, delivered through Git-driven deployments." },
+      { label: "My contribution", text: "Worked on the private EKS environments and the reusable Terraform patterns." }
+    ],
     tags: ["Amazon EKS", "Terraform", "Argo CD", "Kubernetes"],
     repo: "terraform-aws-modules"
   },
@@ -74,6 +96,13 @@ export const projects = [
     category: "CI/CD • IAM • Security",
     summary: "Implemented federated GitHub Actions authentication using OIDC and scoped IAM roles, replacing long-lived AWS credentials across 30+ repositories.",
     outcome: "Reduced credential-management risk and improved least-privilege CI/CD access.",
+    caseStudy: [
+      { label: "Problem", text: "CI/CD pipelines relied on long-lived AWS credentials stored in repositories, which are hard to rotate and audit." },
+      { label: "Architecture", text: "GitHub Actions requests an OIDC token and assumes a scoped IAM role through AWS STS, with trust policies tied to the calling repository and branch." },
+      { label: "Security", text: "No stored AWS keys, short-lived credentials and least-privilege roles per pipeline." },
+      { label: "Operations", text: "Rolled out across 30+ repositories, removing the need to rotate stored secrets." },
+      { label: "My contribution", text: "Implemented the federation pattern and the roles across the repositories." }
+    ],
     tags: ["GitHub Actions", "OIDC", "IAM", "CI/CD"],
     repo: "github-actions-oidc-aws"
   },
@@ -129,22 +158,31 @@ export const recommendations = [
 
 export const education = [
   { title: "Master of Computer Applications (MCA)", detail: "Punjab Technical University", year: "2007–2009" },
-  { title: "Bachelor of Computer Applications (BCA)", detail: "Panjab University", year: "2004–2006" },
-  { title: "AWS Serverless Demonstrated", detail: "AWS learning credential", year: "2026" },
-  { title: "AWS Knowledge: Serverless – Training Badge", detail: "AWS learning credential", year: "2026" },
-  { title: "Build Infrastructure with Terraform on Google Cloud", detail: "Google Cloud skill badge", year: "2026" },
-  { title: "TOGAF", detail: "Foundation and Practitioner training completed", year: "Training" }
+  { title: "Bachelor of Computer Applications (BCA)", detail: "Panjab University", year: "2004–2006" }
 ];
 
+// Add ONLY examinations you have successfully passed, for example:
+// { title: "AWS Certified Solutions Architect – Associate", detail: "Amazon Web Services", year: "2026" }
+// While this list is empty, the section is hidden on the site.
+export const certifications = [];
 
+export const learningCredentials = [
+  { title: "AWS Serverless Demonstrated", detail: "AWS learning credential (not a certification exam)", year: "2026" },
+  { title: "AWS Knowledge: Serverless – Training Badge", detail: "AWS training badge (not a certification exam)", year: "2026" },
+  { title: "Build Infrastructure with Terraform on Google Cloud", detail: "Google Cloud skill badge (not a certification exam)", year: "2026" }
+];
+
+export const architectureTraining = [
+  { title: "TOGAF Foundation and Practitioner", detail: "Training completed. No certification exam is claimed.", year: "Training" }
+];
+
+// Keep this list short: recruiters rarely wait for a long ticker to loop.
+// The $100K+ figure is cumulative across initiatives (not annual); keep it conservative until a breakdown is documented.
 export const highlights = [
-  { tag: "OPEN TO WORK", text: "AWS Cloud Engineer · Cloud Solutions Architect · Infrastructure Engineering across Ontario", href: "#contact" },
-  { tag: "EXPERIENCE", text: "18+ years in IT, 4+ years running AWS in Canada", href: "#experience" },
-  { tag: "IMPACT", text: "Supported 5 engineering teams and 30+ engineers on AWS infrastructure and production operations", href: "#experience" },
-  { tag: "SECURITY", text: "Replaced long-lived AWS credentials with GitHub Actions OIDC across 30+ repositories", href: "#projects" },
-  { tag: "COST", text: "$100K+ cumulative savings contributed across optimization initiatives", href: "#about" },
-  { tag: "GOVERNANCE", text: "Eight-account AWS Organization run with Control Tower and SCP guardrails", href: "#projects" },
-  { tag: "OPEN SOURCE", text: "Reference repos: landing zone, keyless CI/CD, EKS modules, DR toolkit", href: "#repos" },
-  { tag: "INTERACTIVE", text: "Try four live infrastructure simulations: Terraform, keyless CI/CD, org guardrails and AZ failover", href: "#simulator" },
-  { tag: "ENDORSED", text: "Three LinkedIn recommendations from Numeris colleagues", href: "#references" }
+  { tag: "EXPERIENCE", text: "18+ years in IT", href: "#experience" },
+  { tag: "AWS", text: "AWS infrastructure in Canada since 2022", href: "#experience" },
+  { tag: "GOVERNANCE", text: "Multi-account AWS governance with Control Tower and SCPs", href: "#projects" },
+  { tag: "PLATFORM", text: "Terraform and private EKS platforms", href: "#projects" },
+  { tag: "SECURITY", text: "GitHub Actions OIDC across 30+ repositories", href: "#projects" },
+  { tag: "COST", text: "$100K+ cumulative savings across initiatives (not annual)", href: "#about" }
 ];

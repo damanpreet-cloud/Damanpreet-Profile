@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Activity, AlertTriangle, ArrowUpRight, Boxes, Copy, Github, KeyRound, Play,
+  Activity, AlertTriangle, ArrowUpRight, Boxes, Github, KeyRound, Play,
   RotateCcw, ShieldAlert, ShieldCheck, Terminal as TerminalIcon
 } from "lucide-react";
 import TerraformSimulator from "./TerraformSimulator.jsx";
+import CopyButton from "./CopyButton.jsx";
 
 /* ---------- shared helpers ---------- */
 
@@ -49,15 +50,12 @@ function TerminalPane({ lines, busy, label = "bash · read-only simulation" }) {
 }
 
 function Shell({ title, lines, children }) {
-  const copyLog = async () => {
-    try { await navigator.clipboard.writeText(lines.map((l) => l.text).join("\n")); } catch { /* clipboard may be unavailable */ }
-  };
   return (
     <div className="simulator-shell">
       <div className="sim-topbar">
         <div className="window-controls"><i /><i /><i /></div>
         <div className="terminal-title"><TerminalIcon size={14} /> {title}</div>
-        <button className="icon-button" onClick={copyLog} aria-label="Copy terminal log" title="Copy terminal log"><Copy size={15} /></button>
+        <CopyButton getText={() => lines.map((l) => l.text).join("\n")} />
       </div>
       <div className="sim-grid">{children}</div>
       <div className="sim-disclaimer"><AlertTriangle size={14} /><span>Safe demo only: nothing here connects to AWS, GitHub or Terraform. Output is scripted and illustrative.</span></div>
@@ -69,6 +67,7 @@ function Brief({ title, summary, tags, repo }) {
   return (
     <div className="scenario-brief">
       <div>
+        <span className="kind-badge concept">CONCEPTUAL DEMONSTRATION</span>
         <strong>{title}</strong>
         <p>{summary}</p>
         <div className="tag-list">{tags.map((t) => <span key={t}>{t}</span>)}</div>
@@ -146,7 +145,8 @@ function OidcScenario() {
             <div className="status-icon">{outcome === "denied" ? <ShieldAlert size={22} /> : <ShieldCheck size={22} />}</div>
             <div><strong>{outcome === "idle" ? "READY" : outcome === "running" ? "EVALUATING" : outcome === "granted" ? "ACCESS GRANTED" : "ACCESS DENIED"}</strong><small>{outcome === "granted" ? "Temporary credentials issued" : outcome === "denied" ? "Trust policy rejected the token" : "Waiting for a workflow run"}</small></div>
           </div>
-          <pre className="claim-box">{`sub: ${sub}\naud: sts.amazonaws.com`}</pre>
+          <pre className="claim-box">{`# illustrative trust-policy condition\nsub: ${sub}\naud: sts.amazonaws.com`}</pre>
+          <p className="sim-note">Simplified for the demo. A real trust policy would also pin the audience, and may restrict environments or workflow files.</p>
           <div className="sim-actions">
             <button className="button button-primary button-full" onClick={runWorkflow} disabled={r.busy}><Play size={15} /> Run workflow</button>
             <button className="button button-quiet button-full" onClick={reset} disabled={r.busy}><RotateCcw size={14} /> Reset</button>
@@ -180,8 +180,8 @@ function ScpScenario() {
   const attempt = (a) => {
     r.push([{ tone: "command", text: `$ ${a.cmd}` }]);
     const steps = a.allowed
-      ? [{ delay: 500, tone: "warning", text: "Evaluating SCPs and IAM permissions..." }, { delay: 600, tone: "success", text: `${a.op}: allowed. No SCP denies this action.`, fx: () => setTally((t) => ({ ...t, allowed: t.allowed + 1 })) }]
-      : [{ delay: 500, tone: "warning", text: "Evaluating SCPs and IAM permissions..." }, { delay: 600, tone: "danger", text: `An error occurred (AccessDenied) when calling ${a.op}: explicit deny in a service control policy.` }, { delay: 300, tone: "muted", text: a.guard, fx: () => setTally((t) => ({ ...t, blocked: t.blocked + 1 })) }];
+      ? [{ delay: 500, tone: "warning", text: "Evaluating SCPs and IAM permissions..." }, { delay: 600, tone: "success", text: `${a.op}: not blocked by the example SCPs. IAM permissions would still apply.`, fx: () => setTally((t) => ({ ...t, allowed: t.allowed + 1 })) }]
+      : [{ delay: 500, tone: "warning", text: "Evaluating SCPs and IAM permissions..." }, { delay: 600, tone: "danger", text: `An error occurred (AccessDenied) when calling ${a.op}: blocked by an example guardrail SCP (illustrative).` }, { delay: 300, tone: "muted", text: a.guard, fx: () => setTally((t) => ({ ...t, blocked: t.blocked + 1 })) }];
     r.run(steps);
   };
   const reset = () => { r.reset(); setTally({ allowed: 0, blocked: 0 }); };
@@ -196,6 +196,7 @@ function ScpScenario() {
           <div className="action-list">
             {SCP_ACTIONS.map((a) => <button key={a.id} className="action-btn" onClick={() => attempt(a)} disabled={r.busy}><span>{a.label}</span><small className={a.allowed ? "ok" : "risk"}>{a.allowed ? "SAFE" : "RISKY"}</small></button>)}
           </div>
+          <p className="sim-note">The real result depends on which SCPs are attached and on the caller&apos;s IAM permissions. An action can also be denied by IAM without any SCP involved.</p>
           <div className="tally"><div><strong>{tally.blocked}</strong><span>BLOCKED</span></div><div><strong>{tally.allowed}</strong><span>ALLOWED</span></div></div>
           <div className="sim-actions"><button className="button button-quiet button-full" onClick={reset} disabled={r.busy}><RotateCcw size={14} /> Reset</button></div>
         </aside>
@@ -220,16 +221,18 @@ function DrScenario() {
   const [azA, setAzA] = useState("up");
   const [traffic, setTraffic] = useState([33, 33, 34]);
   const [rds, setRds] = useState({ primary: 0, standby: 1 });
+  const [lb, setLb] = useState("balanced");
+  const [db, setDb] = useState("primary 1a");
 
   const failAz = () => {
     setPhase("failing");
     r.push([{ tone: "command", text: "$ simulate az-impairment --az ca-central-1a" }]);
     r.run([
       { tone: "warning", text: "AZ ca-central-1a impaired (simulated)." },
-      { tone: "danger", text: "ALB: targets in 1a failing health checks.", fx: () => setAzA("down") },
-      { text: "ALB: deregistering unhealthy targets, shifting traffic to 1b and 1d.", fx: () => setTraffic([0, 50, 50]) },
-      { tone: "warning", text: "RDS: primary in 1a unreachable. Starting Multi-AZ failover." },
-      { tone: "success", text: "RDS: standby in 1b promoted to primary.", fx: () => setRds({ primary: 1, standby: null }) },
+      { tone: "danger", text: "[ALB] Targets in 1a failing health checks.", fx: () => setAzA("down") },
+      { text: "[ALB] Deregistering unhealthy targets, shifting traffic to 1b and 1d.", fx: () => { setTraffic([0, 50, 50]); setLb("rerouted"); } },
+      { tone: "warning", text: "[RDS] Primary in 1a unreachable. Database failover is separate from load-balancer routing.", fx: () => setDb("failing over") },
+      { tone: "success", text: "[RDS] Standby in 1b promoted to primary.", fx: () => { setRds({ primary: 1, standby: null }); setDb("promoted"); } },
       { tone: "success", text: "Application serving from 1b and 1d. Error rate back to baseline.", fx: () => setPhase("degraded") },
       { tone: "muted", text: "Runbook step recorded: AZ impairment drill." }
     ]);
@@ -240,14 +243,14 @@ function DrScenario() {
     r.push([{ tone: "command", text: "$ simulate az-recovery --az ca-central-1a" }]);
     r.run([
       { text: "ca-central-1a capacity restored.", fx: () => setAzA("up") },
-      { tone: "success", text: "ALB: targets registered, health checks passing.", fx: () => setTraffic([33, 33, 34]) },
-      { tone: "success", text: "RDS: new standby established in 1a.", fx: () => setRds({ primary: 1, standby: 0 }) },
+      { tone: "success", text: "[ALB] Targets registered, health checks passing.", fx: () => { setTraffic([33, 33, 34]); setLb("balanced"); } },
+      { tone: "success", text: "[RDS] New standby established in 1a.", fx: () => { setRds({ primary: 1, standby: 0 }); setDb("standby restored"); } },
       { tone: "success", text: "Environment healthy across all three AZs.", fx: () => setPhase("healthy") },
       { tone: "muted", text: "Next: post-incident review, then update the runbook." }
     ]);
   };
 
-  const reset = () => { r.reset(); setPhase("healthy"); setAzA("up"); setTraffic([33, 33, 34]); setRds({ primary: 0, standby: 1 }); };
+  const reset = () => { r.reset(); setPhase("healthy"); setAzA("up"); setTraffic([33, 33, 34]); setRds({ primary: 0, standby: 1 }); setLb("balanced"); setDb("primary 1a"); };
   const cls = { healthy: "", failing: "destroying", degraded: "destroyed", recovering: "restoring" }[phase];
   const label = { healthy: "HEALTHY", failing: "FAILING OVER", degraded: "AZ DOWN · SERVING", recovering: "RECOVERING" }[phase];
 
@@ -275,6 +278,11 @@ function DrScenario() {
               );
             })}
           </div>
+          <div className="two-lane">
+            <div><span>LOAD BALANCER</span><strong>{lb}</strong><small>Health checks route traffic</small></div>
+            <div><span>DATABASE</span><strong>{db}</strong><small>RDS Multi-AZ failover</small></div>
+          </div>
+          <p className="sim-note">These are two separate mechanisms: the load balancer reacts to health checks within seconds, while the database promotes its standby on its own timeline.</p>
           <div className="sim-actions">
             {phase === "healthy" && <button className="button button-danger button-full" onClick={failAz} disabled={r.busy}><Play size={15} /> Fail ca-central-1a</button>}
             {phase === "degraded" && <button className="button button-primary button-full" onClick={restoreAz} disabled={r.busy}><RotateCcw size={15} /> Restore ca-central-1a</button>}
