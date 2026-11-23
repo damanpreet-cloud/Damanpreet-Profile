@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowDown, ArrowRight, ArrowUpRight, Award, BriefcaseBusiness, Check,
-  Cloud, Code2, Fingerprint, Github, LifeBuoy, Linkedin, Mail, Menu, Network, ShieldCheck,
-  Terminal, Workflow, X, Zap
+  Cloud, Code2, Fingerprint, Github, Home, LifeBuoy, Linkedin, Mail, Network, ShieldCheck,
+  Terminal, Workflow, Zap, ChevronDown
 } from "lucide-react";
 import TerraformSimulator from "./components/TerraformSimulator.jsx";
-import { expertise, experience, projects, repos, recommendations, education } from "./data.js";
+import { expertise, experience, projects, repos, recommendations, education, highlights } from "./data.js";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -17,19 +17,125 @@ function SectionTitle({ eyebrow, title, accent, description }) {
   return <div className="section-heading"><div><span className="eyebrow">{eyebrow}</span><h2>{title} <span className="gradient-text">{accent}</span></h2>{description && <p className="section-intro">{description}</p>}</div></div>;
 }
 
+
+function Ticker() {
+  const items = [...highlights, ...highlights];
+  return (
+    <div className="ticker" role="region" aria-label="Highlights for recruiters">
+      <div className="ticker-label"><span className="ticker-pulse" />HIGHLIGHTS</div>
+      <div className="ticker-window">
+        <div className="ticker-track">
+          {items.map((h, i) => (
+            <a className="ticker-item" key={i} href={h.href} aria-hidden={i >= highlights.length ? "true" : undefined} tabIndex={i >= highlights.length ? -1 : undefined}>
+              <b>{h.tag}</b><span>{h.text}</span><i aria-hidden="true">◆</i>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RecommendationCard({ r, hidden, onToggle }) {
+  const [open, setOpen] = useState(false);
+  const toggle = () => { setOpen((v) => !v); onToggle(!open); };
+  return (
+    <figure className={open ? "quote-card open" : "quote-card"} aria-hidden={hidden ? "true" : undefined}>
+      <blockquote>{r.text}</blockquote>
+      <button type="button" className="quote-more" onClick={toggle} tabIndex={hidden ? -1 : 0}>{open ? "Show less" : "Read full recommendation"}<ChevronDown size={13} /></button>
+      <figcaption><strong>{r.name}</strong><span>{r.role}</span></figcaption>
+    </figure>
+  );
+}
+
+function RecommendationsCarousel() {
+  const ref = useRef(null);
+  const paused = useRef(false);
+  const expanded = useRef(0);
+  const resumeTimer = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+    let raf; let last = performance.now(); let pos = el.scrollLeft;
+    const speed = 38; // pixels per second
+    const tick = (now) => {
+      const dt = Math.min(now - last, 64) / 1000; last = now;
+      const half = el.scrollWidth / 2;
+      if (!paused.current && expanded.current === 0 && half > el.clientWidth) {
+        pos += speed * dt;
+        if (pos >= half) pos -= half;
+        el.scrollLeft = pos;
+      } else {
+        pos = el.scrollLeft;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const hold = () => { paused.current = true; clearTimeout(resumeTimer.current); };
+  const release = (delay = 1800) => { clearTimeout(resumeTimer.current); resumeTimer.current = setTimeout(() => { paused.current = false; }, delay); };
+  const onScroll = () => {
+    const el = ref.current; if (!el) return;
+    const half = el.scrollWidth / 2;
+    if (el.scrollLeft >= half) el.scrollLeft -= half;
+    else if (el.scrollLeft <= 0 && paused.current) el.scrollLeft += half;
+  };
+  const onToggle = (isOpen) => { expanded.current += isOpen ? 1 : -1; };
+  const list = [...recommendations, ...recommendations];
+
+  return (
+    <div className="quote-carousel" ref={ref} onMouseEnter={hold} onMouseLeave={() => release(400)} onTouchStart={hold} onTouchEnd={() => release(2200)} onFocus={hold} onBlur={() => release(400)} onScroll={onScroll} tabIndex={0} aria-label="Colleague recommendations, scrolling automatically. Hover, touch or focus to pause.">
+      {list.map((r, i) => <RecommendationCard key={i} r={r} hidden={i >= recommendations.length} onToggle={onToggle} />)}
+    </div>
+  );
+}
+
+const tabs = [
+  { id: "home", label: "Home", Icon: Home },
+  { id: "experience", label: "Experience", Icon: BriefcaseBusiness },
+  { id: "projects", label: "Projects", Icon: Code2 },
+  { id: "simulator", label: "Lab", Icon: Terminal },
+  { id: "contact", label: "Contact", Icon: Mail }
+];
+
+function TabBar() {
+  const [active, setActive] = useState("home");
+  useEffect(() => {
+    const ids = ["home", "about", "expertise", "experience", "projects", "repos", "simulator", "references", "education", "contact"];
+    const map = { about: "home", expertise: "experience", repos: "projects", references: "contact", education: "contact" };
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { const id = e.target.id; setActive(map[id] || id); } });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    ids.forEach((id) => { const n = document.getElementById(id); if (n) obs.observe(n); });
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <nav className="tab-bar" aria-label="Primary">
+      {tabs.map(({ id, label, Icon }) => (
+        <a key={id} href={`#${id}`} className={active === id ? "tab active" : "tab"} aria-current={active === id ? "true" : undefined}>
+          <Icon size={20} strokeWidth={active === id ? 2.4 : 1.9} /><span>{label}</span>
+        </a>
+      ))}
+    </nav>
+  );
+}
+
 function App() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const nav = ["About", "Expertise", "Experience", "Projects", "Repos", "Simulator", "Contact"];
-  const closeMenu = () => setMenuOpen(false);
 
   return (
     <div className="app-shell">
+      <Ticker />
       <header className="site-header">
-        <a href="#home" className="brand" onClick={closeMenu}><span className="brand-mark">DS</span><span>DAMANPREET<span className="brand-dot">.</span></span></a>
-        <button className="mobile-menu" onClick={() => setMenuOpen((v) => !v)} aria-label="Toggle navigation">{menuOpen ? <X /> : <Menu />}</button>
-        <nav className={menuOpen ? "nav-links open" : "nav-links"}>
-          {nav.map((item) => <a key={item} href={`#${item.toLowerCase()}`} onClick={closeMenu}>{item}</a>)}
-          <a className="nav-cta" href="#contact" onClick={closeMenu}>Let's connect <ArrowUpRight size={14} /></a>
+        <a href="#home" className="brand"><span className="brand-mark">DS</span><span>DAMANPREET<span className="brand-dot">.</span></span></a>
+        <a className="header-connect" href="#contact">Connect <ArrowUpRight size={13} /></a>
+        <nav className="nav-links">
+          {nav.map((item) => <a key={item} href={`#${item.toLowerCase()}`}>{item}</a>)}
+          <a className="nav-cta" href="#contact">Let's connect <ArrowUpRight size={14} /></a>
         </nav>
       </header>
 
@@ -102,7 +208,7 @@ function App() {
           <div className="timeline">
             {experience.map((item, index) => <motion.div className="timeline-item" key={item.company + item.role} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
               <div className="timeline-marker">{String(index + 1).padStart(2, "0")}</div>
-              <div className="timeline-content"><span className="timeline-company">{item.company}</span><h3>{item.role}</h3>{item.dates && <span className="timeline-dates">{item.dates}</span>}<p>{item.detail}</p></div>
+              <div className="timeline-content"><span className="timeline-company">{item.company}</span><h3>{item.role}</h3>{item.dates && <span className="timeline-dates">{item.dates}</span>}<p>{item.detail}</p>{item.link && <a className="repo-link timeline-link" href={item.link} target="_blank" rel="noreferrer"><Linkedin size={14} /> View on LinkedIn <ArrowUpRight size={13} /></a>}</div>
             </motion.div>)}
           </div>
         </section>
@@ -145,12 +251,7 @@ function App() {
 
         <section className="section section-wrap" id="references">
           <SectionTitle eyebrow="06 / REFERENCES" title="What colleagues" accent="say." description="LinkedIn recommendations from people I worked with at Numeris." />
-          <div className="quote-grid">
-            {recommendations.map((r) => <figure className="quote-card" key={r.name}>
-              <blockquote>{r.text}</blockquote>
-              <figcaption><strong>{r.name}</strong><span>{r.role}</span></figcaption>
-            </figure>)}
-          </div>
+          <RecommendationsCarousel />
         </section>
 
         <section className="section section-wrap" id="education">
@@ -174,6 +275,7 @@ function App() {
           </div>
         </section>
       </main>
+      <TabBar />
 
       <footer className="site-footer section-wrap"><a href="#home" className="brand"><span className="brand-mark">DS</span><span>DAMANPREET<span className="brand-dot">.</span></span></a><span>Kitchener, Ontario, Canada · Cloud, Security &amp; Enterprise Infrastructure</span><a href="#home" className="back-top">BACK TO TOP ↑</a></footer>
     </div>

@@ -9,8 +9,9 @@ export const expertise = [
 
 export const experience = [
   {
-    role: "Network and System Admin (Cloud Infrastructure & Solution Architecture)",
+    role: "Network & Systems Administrator | AWS Cloud Infrastructure & Operations",
     company: "Numeris",
+    link: "https://www.linkedin.com/in/damanpreet-singh-chadha/",
     dates: "May 2022 – September 2026 · Ontario, Canada",
     detail: "Supported AWS infrastructure architecture, engineering, security and production operations across five engineering teams and 30+ engineers. Contributed to multi-account governance, network architecture, Kubernetes platforms, infrastructure automation, identity and production reliability."
   },
@@ -133,4 +134,16 @@ export const education = [
   { title: "AWS Knowledge: Serverless – Training Badge", detail: "AWS learning credential", year: "2026" },
   { title: "Build Infrastructure with Terraform on Google Cloud", detail: "Google Cloud skill badge", year: "2026" },
   { title: "TOGAF", detail: "Foundation and Practitioner training completed", year: "Training" }
+];
+
+
+export const highlights = [
+  { tag: "OPEN TO WORK", text: "AWS Cloud Engineer · Cloud Solutions Architect · Infrastructure Engineering across Ontario", href: "#contact" },
+  { tag: "EXPERIENCE", text: "18+ years in IT, 4+ years running AWS in Canada", href: "#experience" },
+  { tag: "IMPACT", text: "Supported 5 engineering teams and 30+ engineers on AWS infrastructure and production operations", href: "#experience" },
+  { tag: "SECURITY", text: "Replaced long-lived AWS credentials with GitHub Actions OIDC across 30+ repositories", href: "#projects" },
+  { tag: "COST", text: "$100K+ cumulative savings contributed across optimization initiatives", href: "#about" },
+  { tag: "GOVERNANCE", text: "Eight-account AWS Organization run with Control Tower and SCP guardrails", href: "#projects" },
+  { tag: "OPEN SOURCE", text: "Reference repos: landing zone, keyless CI/CD, EKS modules, DR toolkit", href: "#repos" },
+  { tag: "ENDORSED", text: "Three LinkedIn recommendations from Numeris colleagues", href: "#references" }
 ];
