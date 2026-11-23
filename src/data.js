@@ -145,5 +145,6 @@ export const highlights = [
   { tag: "COST", text: "$100K+ cumulative savings contributed across optimization initiatives", href: "#about" },
   { tag: "GOVERNANCE", text: "Eight-account AWS Organization run with Control Tower and SCP guardrails", href: "#projects" },
   { tag: "OPEN SOURCE", text: "Reference repos: landing zone, keyless CI/CD, EKS modules, DR toolkit", href: "#repos" },
+  { tag: "INTERACTIVE", text: "Try four live infrastructure simulations: Terraform, keyless CI/CD, org guardrails and AZ failover", href: "#simulator" },
   { tag: "ENDORSED", text: "Three LinkedIn recommendations from Numeris colleagues", href: "#references" }
 ];

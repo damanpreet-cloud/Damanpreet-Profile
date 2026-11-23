@@ -98,16 +98,7 @@ export default function TerraformSimulator() {
   };
 
   return (
-    <section className="section simulator-section" id="simulator">
-      <div className="section-heading">
-        <div>
-          <span className="eyebrow"><span className="eyebrow-dot" /> INTERACTIVE DEMONSTRATION</span>
-          <h2>Terraform <span className="gradient-text">Lifecycle Lab</span></h2>
-          <p className="section-intro">Explore a simulated infrastructure teardown and recovery workflow. The commands and resource events are illustrative, not executed.</p>
-        </div>
-        <span className="simulation-pill"><span /> SIMULATION MODE</span>
-      </div>
-
+    <>
       <div className="simulator-shell">
         <div className="sim-topbar">
           <div className="window-controls"><i /><i /><i /></div>
@@ -179,6 +170,6 @@ export default function TerraformSimulator() {
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </>
   );
 }

@@ -5,7 +5,7 @@ import {
   Cloud, Code2, Fingerprint, Github, Home, LifeBuoy, Linkedin, Mail, Network, ShieldCheck,
   Terminal, Workflow, Zap, ChevronDown
 } from "lucide-react";
-import TerraformSimulator from "./components/TerraformSimulator.jsx";
+import SimulationLab from "./components/SimulationLab.jsx";
 import { expertise, experience, projects, repos, recommendations, education, highlights } from "./data.js";
 
 const fadeUp = {
@@ -247,7 +247,7 @@ function App() {
           </div>
         </section>
 
-        <TerraformSimulator />
+        <SimulationLab />
 
         <section className="section section-wrap" id="references">
           <SectionTitle eyebrow="06 / REFERENCES" title="What colleagues" accent="say." description="LinkedIn recommendations from people I worked with at Numeris." />

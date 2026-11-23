@@ -110,3 +110,39 @@
   .ticker-window{overflow-x:auto;scrollbar-width:none}
 }
 .app-shell{overflow:visible;overflow-x:clip}
+
+
+/* ===== Simulation Lab ===== */
+.lab-tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 0 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.lab-tabs::-webkit-scrollbar{display:none}
+.lab-tab{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;padding:11px 16px;min-height:44px;border:1px solid var(--line);border-radius:999px;background:rgba(16,24,39,.7);color:#9eacc1;font:600 12px var(--heading);cursor:pointer;touch-action:manipulation;transition:.2s}
+.lab-tab:hover{border-color:rgba(99,230,226,.35)}
+.lab-tab.active{border-color:rgba(99,230,226,.55);color:var(--cyan);background:rgba(99,230,226,.09)}
+.scenario-brief{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;padding:18px 20px;margin-bottom:14px;border:1px solid var(--line);border-radius:12px;background:rgba(16,24,39,.6)}
+.scenario-brief>div{flex:1 1 420px;min-width:0}
+.scenario-brief strong{font:700 15px var(--heading)}
+.scenario-brief p{margin:8px 0 12px;color:#93a2b8;font-size:12px;line-height:1.75;max-width:760px}
+.scenario-brief .repo-link{margin:0}
+.field{display:grid;gap:6px;margin:0 0 12px;font:9px var(--mono);color:#8e9eb5;letter-spacing:.8px}
+.field select{width:100%;min-height:44px;padding:10px;background:#0d1626;color:#dbe4f2;border:1px solid var(--line);border-radius:8px;font:11px var(--mono)}
+.field select:focus-visible{outline:2px solid rgba(99,230,226,.5)}
+.claim-box{margin:0 0 4px;padding:12px;background:#0b1220;border:1px solid var(--line);border-radius:8px;color:#8fb7d6;font:10px/1.7 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
+.action-list{display:grid;gap:8px;margin:16px 0}
+.action-btn{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;min-height:46px;padding:10px 12px;background:#0d1626;border:1px solid var(--line);border-radius:9px;color:#c6d4e7;font:11px/1.4 var(--mono);cursor:pointer;touch-action:manipulation;transition:.2s}
+.action-btn:hover:not(:disabled){border-color:rgba(99,230,226,.4)}
+.action-btn:disabled{opacity:.55;cursor:wait}
+.action-btn small{font:700 8px var(--mono);letter-spacing:.8px;padding:3px 6px;border-radius:4px;flex-shrink:0}
+.action-btn small.risk{color:#ff9aa3;border:1px solid rgba(255,117,128,.35)}
+.action-btn small.ok{color:#75e2b2;border:1px solid rgba(83,218,161,.35)}
+.tally{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
+.tally div{display:grid;gap:3px;padding:12px;border:1px solid var(--line);border-radius:9px;text-align:center}
+.tally strong{font:800 22px var(--heading)}
+.tally span{font:8px var(--mono);letter-spacing:1px;color:#8192aa}
+.az-list{display:grid;gap:14px;margin:4px 0 6px}
+.az-row{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center}
+.az-head{display:flex;align-items:center;gap:8px;grid-column:1/-1;font-size:11px}
+.az-head strong{font:500 11px var(--mono);color:#dbe4f2}
+.az-head small{margin-left:auto;font:8px var(--mono);color:#71839c;letter-spacing:.6px}
+.az-track{margin:0}
+.az-pct{font:9px var(--mono);color:#8e9eb5;min-width:30px;text-align:right}
+@media(max-width:900px){.sim-control-pane .field,.sim-control-pane .claim-box,.sim-control-pane .action-list,.sim-control-pane .tally,.sim-control-pane .az-list{grid-column:span 2}.scenario-brief{padding:15px}}
