@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   ArrowDown, ArrowRight, ArrowUpRight, Award, BriefcaseBusiness, Check,
   Cloud, Code2, Fingerprint, Github, Home, LifeBuoy, Linkedin, Mail, Network, ShieldCheck,
-  Terminal, Workflow, Zap, ChevronDown, Download, FileText
+  Terminal, Workflow, Zap, ChevronDown
 } from "lucide-react";
 import SimulationLab from "./components/SimulationLab.jsx";
 import { expertise, experience, projects, repos, recommendations, education, certifications, certificationsInProgress, learningCredentials, architectureTraining, highlights } from "./data.js";
@@ -124,10 +124,6 @@ function TabBar() {
   );
 }
 
-// Resume button only appears when public/resume.pdf exists at build time (see vite.config.js).
-const hasResume = typeof __HAS_RESUME__ !== "undefined" && __HAS_RESUME__;
-const resumeHref = `${import.meta.env.BASE_URL}resume.pdf`;
-
 function CaseStudy({ items }) {
   return (
     <dl className="case-grid">
@@ -194,8 +190,7 @@ function App() {
               <h2>Cloud Solutions Architect <span className="hero-separator">/</span> AWS Engineer</h2>
               <p className="hero-description">I design, secure and modernize enterprise infrastructure across AWS, hybrid cloud, networking and automation. I bring an engineering-first approach to building platforms that teams can operate with confidence.</p>
               <div className="hero-actions">
-                {hasResume && <a className="button button-primary" href={resumeHref} download="Damanpreet-Singh-Chadha-Resume.pdf"><Download size={16} /> Download Resume</a>}
-                <a className={hasResume ? "button button-outline" : "button button-primary"} href="https://www.linkedin.com/in/damanpreetsingh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> View LinkedIn</a>
+                <a className="button button-primary" href="https://www.linkedin.com/in/damanpreetsingh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> View LinkedIn</a>
                 <a className="button button-outline" href="#projects">Explore Technical Projects <ArrowRight size={16} /></a>
               </div>
               <div className="hero-proof">
@@ -309,7 +304,6 @@ function App() {
             <p>I'm interested in AWS Cloud Engineer, Cloud Solutions Architect and infrastructure engineering opportunities across Ontario.</p>
             <div className="contact-actions">
               <a className="button button-primary" href="mailto:only.daman@gmail.com"><Mail size={16} /> Email me</a>
-              {hasResume && <a className="button button-outline" href={resumeHref} download="Damanpreet-Singh-Chadha-Resume.pdf"><FileText size={16} /> Resume</a>}
               <a className="button button-outline" href="https://www.linkedin.com/in/damanpreetsingh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> LinkedIn <ArrowUpRight size={14} /></a>
               <a className="button button-outline" href="https://github.com/damanpreet-cloud" target="_blank" rel="noreferrer"><Github size={16} /> GitHub <ArrowUpRight size={14} /></a>
             </div>

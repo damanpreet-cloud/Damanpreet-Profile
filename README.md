@@ -42,12 +42,11 @@ The workflow builds the site and publishes the `dist/` directory.
 
 ## Before publishing: checklist
 
-1. **Resume.** `public/resume.pdf` is included. Replace it whenever your resume changes; the *Download Resume* button appears automatically when the file exists. Note that anything on the resume (such as a phone number) becomes publicly downloadable.
-2. **Lock file.** Run `npm install` once locally and commit the generated `package-lock.json`. The deploy workflow uses `npm ci` when the lock file exists.
-3. **Certifications.** `certifications` in `src/data.js` lists only exams you have passed. Move the Professional exam there only after you pass it.
-4. **SFTP cost figures.** When you can verify the monthly cost before and after, add a "Financial impact" line to the SFTP case study in `src/data.js`.
-5. **Savings claim.** The `$100K+` figure is cumulative, not annual. Keep it conservative and be ready to explain which initiatives it includes.
-6. **Content review.** Confirm role titles, dates, the four case studies and every project outcome in `src/data.js`.
+1. **Lock file.** Run `npm install` once locally and commit the generated `package-lock.json`. The deploy workflow uses `npm ci` when the lock file exists.
+2. **Certifications.** `certifications` in `src/data.js` lists only exams you have passed. Move the Professional exam there only after you pass it.
+3. **SFTP cost figures.** When you can verify the monthly cost before and after, add a "Financial impact" line to the SFTP case study in `src/data.js`.
+4. **Savings claim.** The `$100K+` figure is cumulative, not annual. Keep it conservative and be ready to explain which initiatives it includes.
+5. **Content review.** Confirm role titles, dates, the four case studies and every project outcome in `src/data.js`.
 
 ## GitHub Pages base path
 
@@ -56,7 +55,7 @@ The workflow builds the site and publishes the `dist/` directory.
 ## Structure
 
 ```text
-public/            resume.pdf (add), og-image.png, icon, manifest
+public/            og-image.png, icon, manifest
 src/
   components/SimulationLab.jsx, TerraformSimulator.jsx, CopyButton.jsx
   App.jsx
