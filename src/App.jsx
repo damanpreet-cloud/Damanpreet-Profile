@@ -6,7 +6,7 @@ import {
   Terminal, Workflow, Zap, ChevronDown, Download, FileText
 } from "lucide-react";
 import SimulationLab from "./components/SimulationLab.jsx";
-import { expertise, experience, projects, repos, recommendations, education, certifications, learningCredentials, architectureTraining, highlights } from "./data.js";
+import { expertise, experience, projects, repos, recommendations, education, certifications, certificationsInProgress, learningCredentials, architectureTraining, highlights } from "./data.js";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -188,14 +188,14 @@ function App() {
         <section className="hero section-wrap" id="home">
           <div className="hero-grid">
             <motion.div className="hero-copy" initial="hidden" animate="visible" variants={fadeUp}>
-              <div className="availability"><span className="availability-dot" /> OPEN TO CLOUD & ARCHITECTURE OPPORTUNITIES</div>
+              <div className="availability"><span className="availability-dot" /> OPEN TO CLOUD SOLUTION ARCHITECT, AWS CLOUD ENGINEER & CLOUD SECURITY ROLES</div>
               <p className="hero-kicker">HELLO, I'M</p>
               <h1>Damanpreet<br /><span className="gradient-text">Singh Chadha.</span></h1>
               <h2>Cloud Solutions Architect <span className="hero-separator">/</span> AWS Engineer</h2>
               <p className="hero-description">I design, secure and modernize enterprise infrastructure across AWS, hybrid cloud, networking and automation. I bring an engineering-first approach to building platforms that teams can operate with confidence.</p>
               <div className="hero-actions">
                 {hasResume && <a className="button button-primary" href={resumeHref} download="Damanpreet-Singh-Chadha-Resume.pdf"><Download size={16} /> Download Resume</a>}
-                <a className={hasResume ? "button button-outline" : "button button-primary"} href="https://www.linkedin.com/in/damanpreet-singh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> View LinkedIn</a>
+                <a className={hasResume ? "button button-outline" : "button button-primary"} href="https://www.linkedin.com/in/damanpreetsingh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> View LinkedIn</a>
                 <a className="button button-outline" href="#projects">Explore Technical Projects <ArrowRight size={16} /></a>
               </div>
               <div className="hero-proof">
@@ -297,6 +297,7 @@ function App() {
           <SectionTitle eyebrow="07 / EDUCATION" title="Education &" accent="credentials." description="Degrees, passed certification exams, learning credentials and training are listed separately." />
           <CredentialGroup title="Education" items={education} />
           <CredentialGroup title="Professional certifications" note="Examinations successfully passed." items={certifications} />
+          <CredentialGroup title="Certifications in progress" note="Not yet earned." items={certificationsInProgress} />
           <CredentialGroup title="Cloud learning credentials" note="AWS and Google Cloud training badges. These are not certification exams." items={learningCredentials} />
           <CredentialGroup title="Architecture training" note="Training completed, not a certification." items={architectureTraining} />
         </section>
@@ -309,7 +310,7 @@ function App() {
             <div className="contact-actions">
               <a className="button button-primary" href="mailto:only.daman@gmail.com"><Mail size={16} /> Email me</a>
               {hasResume && <a className="button button-outline" href={resumeHref} download="Damanpreet-Singh-Chadha-Resume.pdf"><FileText size={16} /> Resume</a>}
-              <a className="button button-outline" href="https://www.linkedin.com/in/damanpreet-singh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> LinkedIn <ArrowUpRight size={14} /></a>
+              <a className="button button-outline" href="https://www.linkedin.com/in/damanpreetsingh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> LinkedIn <ArrowUpRight size={14} /></a>
               <a className="button button-outline" href="https://github.com/damanpreet-cloud" target="_blank" rel="noreferrer"><Github size={16} /> GitHub <ArrowUpRight size={14} /></a>
             </div>
             <small className="contact-edit-note">only.daman@gmail.com · Kitchener, Ontario, Canada</small>

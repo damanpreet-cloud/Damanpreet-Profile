@@ -1,8 +1,8 @@
 export const expertise = [
   { group: "Cloud platforms", items: ["Amazon Web Services", "Microsoft Azure", "Google Cloud", "Hybrid cloud"] },
-  { group: "Infrastructure & networking", items: ["VPC & network architecture", "Transit Gateway", "Direct Connect & VPN", "DNS, load balancing", "Palo Alto & Cisco", "Windows & Linux"] },
-  { group: "Automation & platforms", items: ["Terraform / IaC", "Kubernetes, EKS, AKS, GKE", "Docker", "GitHub Actions", "Argo CD", "Ansible & PowerShell"] },
-  { group: "Security & operations", items: ["IAM & least privilege", "Cloud governance", "KMS & secrets", "GuardDuty & Security Hub", "Wiz & Darktrace", "Monitoring & incident response", "FinOps"] },
+  { group: "Infrastructure & networking", items: ["VPC & network architecture", "Transit Gateway", "Direct Connect & VPN", "DNS, load balancing", "Palo Alto (Panorama), Cisco & WAF", "Windows & Linux"] },
+  { group: "Automation & platforms", items: ["Terraform / IaC", "Kubernetes, EKS, ECS, AKS, GKE", "Docker", "GitHub Actions", "Argo CD", "Ansible & PowerShell"] },
+  { group: "Security & operations", items: ["IAM & least privilege", "Cloud governance", "KMS & Secrets Manager", "GuardDuty & Security Hub", "Wiz & Darktrace", "Monitoring & incident response", "FinOps"] },
   { group: "Identity & endpoint", items: ["Entra ID SSO (SAML, SCIM)", "Active Directory", "Group Policy", "ADFS", "Intune", "SCCM & WSUS", "Microsoft 365"] },
   { group: "Resilience & recovery", items: ["AWS Elastic Disaster Recovery", "Veeam", "Multi-AZ failover testing", "Backup & recovery planning", "Runbooks", "Post-incident reviews"] }
 ];
@@ -11,9 +11,9 @@ export const experience = [
   {
     role: "Network & Systems Administrator | AWS Cloud Infrastructure & Operations",
     company: "Numeris",
-    link: "https://www.linkedin.com/in/damanpreet-singh-chadha/",
-    dates: "May 2022 – September 2026 · Ontario, Canada",
-    detail: "Supported AWS infrastructure architecture, engineering, security and production operations across five engineering teams and 30+ engineers. Contributed to multi-account governance, network architecture, Kubernetes platforms, infrastructure automation, identity and production reliability."
+    link: "https://www.linkedin.com/in/damanpreetsingh-chadha/",
+    dates: "May 2022 – September 2026 · North York, Ontario, Canada",
+    detail: "Designed and supported an eight-account AWS Organization, built reusable Terraform modules across 3 environments, and replaced long-lived AWS credentials with GitHub Actions OIDC across 30+ repositories. Supported EKS and ECS platforms, Entra ID SSO, security monitoring and remediation, and 24x7 on-call (about 10 incidents and 8–10 daily Jira requests a week) for five engineering teams and 30+ engineers."
   },
   {
     role: "Information Technology Manager",
@@ -46,15 +46,16 @@ export const projects = [
     number: "01",
     title: "Secure SFTP modernization",
     category: "AWS • Storage • Cost optimization",
-    summary: "Modernized a legacy EC2-based FTP/FTPS/SFTP pattern toward AWS Transfer Family and S3, using vendor-isolated prefixes, IAM roles and lifecycle controls.",
-    outcome: "Reduced recurring infrastructure cost substantially while reducing server patching and maintenance overhead.",
+    summary: "Contributed to modernizing a legacy FTP migration toward AWS Transfer Family and S3, using vendor-isolated prefixes, IAM roles and lifecycle controls.",
+    outcome: "About a 70% cost reduction in that environment, with less server patching and maintenance overhead.",
     caseStudy: [
       { label: "Problem", text: "A legacy EC2-based FTP/FTPS/SFTP pattern that required ongoing server patching and maintenance." },
       { label: "Architecture", text: "AWS Transfer Family in front of Amazon S3, with IAM roles for access and S3 lifecycle policies for retention." },
       { label: "Security", text: "Vendor-isolated S3 prefixes and controlled, role-based access so each vendor reaches only its own data." },
       { label: "Operations", text: "Removed the self-managed servers, which reduced patching and routine maintenance overhead." },
-      // Add { label: "Financial impact", text: "Monthly cost before: $X · after: $Y" } here once the figures are verified.
-      { label: "My contribution", text: "Architecture, implementation and operational support." }
+      { label: "Financial impact", text: "About a 70% cost reduction in that environment." },
+      // Optional: add verified monthly before and after figures to the line above.
+      { label: "My contribution", text: "Contributed to the migration and its ongoing operational support." }
     ],
     tags: ["AWS Transfer Family", "Amazon S3", "IAM", "Lifecycle policies"]
   },
@@ -62,14 +63,14 @@ export const projects = [
     number: "02",
     title: "Multi-account AWS governance",
     category: "AWS Organizations • Security",
-    summary: "Supported an eight-account AWS Organization using Control Tower and Service Control Policies, with shared governance and account-level guardrails.",
+    summary: "Designed and supported an eight-account AWS Organization using Control Tower, Organizations and Service Control Policies, with shared governance and account-level guardrails.",
     outcome: "A more consistent foundation for account provisioning, security controls and operational ownership.",
     caseStudy: [
       { label: "Problem", text: "Multiple AWS accounts needed consistent provisioning, security controls and clear operational ownership." },
       { label: "Architecture", text: "An eight-account AWS Organization using Control Tower, organizational units, Service Control Policies and IAM Identity Center." },
       { label: "Security", text: "Account-level guardrails applied through SCPs, with shared governance across accounts." },
       { label: "Operations", text: "A more predictable path for new accounts and a clearer split of responsibility between teams." },
-      { label: "My contribution", text: "Supported governance and guardrail work. The linked repository is my separate reference implementation." }
+      { label: "My contribution", text: "Designed and supported the governance model and guardrails. The linked repository is my separate reference implementation." }
     ],
     tags: ["Control Tower", "Organizations", "SCPs", "IAM Identity Center"],
     repo: "aws-landing-zone-terraform"
@@ -78,13 +79,13 @@ export const projects = [
     number: "03",
     title: "Private Kubernetes platform",
     category: "EKS • Terraform • GitOps",
-    summary: "Worked on private EKS environments, reusable Terraform patterns, Argo CD delivery, workload autoscaling and supporting network and storage integrations.",
+    summary: "Worked on private EKS and ECS environments, reusable Terraform modules across 3 environments, Argo CD delivery, workload autoscaling and supporting network and storage integrations.",
     outcome: "Repeatable platform foundations for engineering teams and controlled workload delivery.",
     caseStudy: [
       { label: "Problem", text: "Engineering teams needed repeatable, controlled foundations for running workloads on Kubernetes." },
       { label: "Architecture", text: "Private EKS clusters built from reusable Terraform patterns (VPC, EKS with IRSA, IAM service roles), with Argo CD for GitOps delivery." },
       { label: "Security", text: "Private cluster networking and IAM roles for service accounts, so workloads get scoped AWS permissions." },
-      { label: "Operations", text: "Workload autoscaling plus supporting network and storage integrations, delivered through Git-driven deployments." },
+      { label: "Operations", text: "Workload autoscaling, persistent storage and network integrations, delivered through Git-driven deployments. Terraform modules were reused across 3 environments." },
       { label: "My contribution", text: "Worked on the private EKS environments and the reusable Terraform patterns." }
     ],
     tags: ["Amazon EKS", "Terraform", "Argo CD", "Kubernetes"],
@@ -161,15 +162,21 @@ export const education = [
   { title: "Bachelor of Computer Applications (BCA)", detail: "Panjab University", year: "2004–2006" }
 ];
 
-// Add ONLY examinations you have successfully passed, for example:
-// { title: "AWS Certified Solutions Architect – Associate", detail: "Amazon Web Services", year: "2026" }
-// While this list is empty, the section is hidden on the site.
-export const certifications = [];
+// Add ONLY examinations you have successfully passed. While this list is empty, the section is hidden.
+export const certifications = [
+  { title: "AWS Certified Solutions Architect – Associate", detail: "Amazon Web Services · certification exam passed", year: "2022" }
+];
+
+// Not yet passed, so shown separately so it cannot be mistaken for an earned certification.
+export const certificationsInProgress = [
+  { title: "AWS Certified Solutions Architect – Professional", detail: "Preparing for the exam", year: "In progress" }
+];
 
 export const learningCredentials = [
   { title: "AWS Serverless Demonstrated", detail: "AWS learning credential (not a certification exam)", year: "2026" },
   { title: "AWS Knowledge: Serverless – Training Badge", detail: "AWS training badge (not a certification exam)", year: "2026" },
-  { title: "Build Infrastructure with Terraform on Google Cloud", detail: "Google Cloud skill badge (not a certification exam)", year: "2026" }
+  { title: "Build Infrastructure with Terraform on Google Cloud", detail: "Google Cloud skill badge (not a certification exam)", year: "2026" },
+  { title: "Connecting Cloud Networks with NCC", detail: "Google Cloud learning credential (not a certification exam)", year: "Learning" }
 ];
 
 export const architectureTraining = [

@@ -182,3 +182,10 @@
   .case-grid{grid-template-columns:1fr}
   .hero-actions>:first-child:nth-last-child(3){grid-column:1/-1}
 }
+
+.pod-grid{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 14px;min-height:22px}
+.pod{width:20px;height:20px;border-radius:5px;background:rgba(83,218,161,.25);border:1px solid #55d69b;animation:pop .3s ease}
+.pod.bad{background:rgba(255,105,117,.22);border-color:#f16f7a}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+@media(max-width:900px){.sim-control-pane .pod-grid{grid-column:span 2}}
+@media(prefers-reduced-motion:reduce){.pod{animation:none}}

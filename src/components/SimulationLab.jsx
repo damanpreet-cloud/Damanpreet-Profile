@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Activity, AlertTriangle, ArrowUpRight, Boxes, Github, KeyRound, Play,
-  RotateCcw, ShieldAlert, ShieldCheck, Terminal as TerminalIcon
+  Activity, AlertTriangle, ArrowUpRight, Boxes, FolderLock, GitBranch, Github, KeyRound, Play,
+  RotateCcw, ShieldAlert, ShieldCheck, Siren, Terminal as TerminalIcon, UserCheck
 } from "lucide-react";
 import TerraformSimulator from "./TerraformSimulator.jsx";
 import CopyButton from "./CopyButton.jsx";
@@ -295,13 +295,302 @@ function DrScenario() {
   );
 }
 
+/* ---------- Scenario: SFTP vendor isolation ---------- */
+
+const SFTP_INTRO = [
+  { tone: "muted", text: "# AWS Transfer Family + S3 · vendor isolation · SIMULATION ONLY" },
+  { tone: "command", text: "$ sftp vendor-a@s-xxxxxxxx.server.transfer.amazonaws.com" },
+  { tone: "success", text: "Connected. Home directory mapped to vendor-a/." },
+  { tone: "muted", text: "Managed service: there are no EC2 servers to patch." }
+];
+
+function SftpScenario() {
+  const r = useRunner(SFTP_INTRO);
+  const [vendor, setVendor] = useState("vendor-a");
+  const [tally, setTally] = useState({ allowed: 0, blocked: 0 });
+  const other = vendor === "vendor-a" ? "vendor-b" : "vendor-a";
+  const bump = (k) => () => setTally((t) => ({ ...t, [k]: t[k] + 1 }));
+
+  const changeVendor = (v) => {
+    setVendor(v);
+    r.push([
+      { tone: "command", text: `$ sftp ${v}@s-xxxxxxxx.server.transfer.amazonaws.com` },
+      { tone: "success", text: `Connected. Home directory mapped to ${v}/.` }
+    ]);
+  };
+
+  const actions = {
+    list: { label: "List my folder", cmd: `sftp> ls /${vendor}/`, steps: [{ tone: "success", text: `3 files in ${vendor}/ (sample data).`, fx: bump("allowed") }] },
+    upload: { label: "Upload report.csv", cmd: `sftp> put report.csv /${vendor}/inbound/`, steps: [{ tone: "success", text: `Uploaded to s3://<bucket>/${vendor}/inbound/report.csv`, fx: bump("allowed") }] },
+    cross: { label: "Open another vendor's folder", cmd: `sftp> ls /${other}/`, steps: [{ tone: "danger", text: `Permission denied: the IAM role for ${vendor} only allows the ${vendor}/ prefix.`, fx: bump("blocked") }, { tone: "muted", text: "No data from another vendor was exposed." }] },
+    lifecycle: { label: "Run S3 lifecycle rule", cmd: "# S3 lifecycle evaluation (scheduled)", steps: [{ tone: "normal", text: "Evaluating objects against the retention rule..." }, { tone: "success", text: "Objects past retention were transitioned or expired automatically. No manual clean-up job." }] }
+  };
+  const run = (k) => { const a = actions[k]; r.push([{ tone: "command", text: a.cmd }]); r.run(a.steps.map((x) => ({ delay: 500, ...x }))); };
+  const reset = () => { r.reset(); setVendor("vendor-a"); setTally({ allowed: 0, blocked: 0 }); };
+
+  return (
+    <>
+      <Brief title="Managed SFTP with vendor-isolated access" summary="Modernized a legacy EC2-based FTP/FTPS/SFTP service onto AWS Transfer Family and S3. Sign in as a vendor and try to reach another vendor's data." tags={["Transfer Family", "S3", "IAM roles", "Lifecycle policies"]} />
+      <Shell title="transfer-family / vendor-isolation" lines={r.lines}>
+        <TerminalPane lines={r.lines} busy={r.busy} label="sftp · read-only simulation" />
+        <aside className="sim-control-pane">
+          <div className="control-heading"><FolderLock size={18} /><span>SIGNED IN AS</span></div>
+          <label className="field">VENDOR USER
+            <select value={vendor} onChange={(e) => changeVendor(e.target.value)} disabled={r.busy}>
+              <option value="vendor-a">vendor-a</option>
+              <option value="vendor-b">vendor-b</option>
+            </select>
+          </label>
+          <div className="action-list">
+            {Object.entries(actions).map(([k, a]) => <button key={k} className="action-btn" onClick={() => run(k)} disabled={r.busy}><span>{a.label}</span>{k === "cross" && <small className="risk">TEST</small>}</button>)}
+          </div>
+          <div className="tally"><div><strong>{tally.blocked}</strong><span>BLOCKED</span></div><div><strong>{tally.allowed}</strong><span>ALLOWED</span></div></div>
+          <div className="sim-actions"><button className="button button-quiet button-full" onClick={reset} disabled={r.busy}><RotateCcw size={14} /> Reset</button></div>
+        </aside>
+      </Shell>
+    </>
+  );
+}
+
+/* ---------- Scenario: Entra ID SSO with group-based access ---------- */
+
+const SSO_INTRO = [
+  { tone: "muted", text: "# Entra ID → AWS IAM Identity Center · SAML + SCIM · SIMULATION ONLY" },
+  { tone: "muted", text: "# Access is controlled by Active Directory / Entra group membership." },
+  { tone: "normal", text: "Choose a user, change group membership, then try to sign in." }
+];
+const GROUP = "aws-platform-engineers";
+
+function SsoScenario() {
+  const r = useRunner(SSO_INTRO);
+  const [members, setMembers] = useState({ "engineer-a": true, "contractor-b": false });
+  const [user, setUser] = useState("engineer-a");
+  const [outcome, setOutcome] = useState("idle");
+  const isMember = members[user];
+
+  const setMembership = (value) => {
+    r.push([{ tone: "command", text: `$ ${value ? "add" : "remove"} ${user} ${value ? "to" : "from"} group ${GROUP}` }]);
+    r.run([
+      { delay: 500, text: "Entra ID updated the group." },
+      { delay: 600, tone: "success", text: `SCIM sync: ${user} ${value ? "provisioned in" : "deprovisioned from"} IAM Identity Center.`, fx: () => { setMembers((m) => ({ ...m, [user]: value })); setOutcome("idle"); } }
+    ]);
+  };
+
+  const signIn = () => {
+    setOutcome("running");
+    r.push([{ tone: "command", text: `$ sign in as ${user} (AWS access portal)` }]);
+    const steps = [
+      { delay: 500, text: "SAML request sent to Entra ID." },
+      { delay: 600, tone: "warning", text: `Checking assignment: is ${user} in ${GROUP}?` }
+    ];
+    if (isMember) steps.push(
+      { delay: 600, tone: "success", text: "SAML assertion issued. Identity Center maps the group to a permission set." },
+      { delay: 500, tone: "success", text: "Signed in with a role scoped to the assigned accounts.", fx: () => setOutcome("granted") }
+    );
+    else steps.push(
+      { delay: 600, tone: "danger", text: "Sign-in blocked: the user is not assigned to this application." },
+      { delay: 400, tone: "muted", text: "No AWS session was created.", fx: () => setOutcome("denied") }
+    );
+    r.run(steps);
+  };
+  const reset = () => { r.reset(); setMembers({ "engineer-a": true, "contractor-b": false }); setUser("engineer-a"); setOutcome("idle"); };
+  const cls = outcome === "denied" ? "destroyed" : outcome === "running" ? "restoring" : "";
+
+  return (
+    <>
+      <Brief title="Single sign-on with group-based access" summary="Built Entra ID enterprise-application SSO (SAML, SCIM) for AWS, Salesforce and other apps, with access controlled through Active Directory groups. Change a group and watch access follow." tags={["Entra ID", "SAML", "SCIM", "IAM Identity Center", "Active Directory"]} />
+      <Shell title="identity / entra-sso-aws" lines={r.lines}>
+        <TerminalPane lines={r.lines} busy={r.busy} label="identity · read-only simulation" />
+        <aside className="sim-control-pane">
+          <div className="control-heading"><UserCheck size={18} /><span>USER AND GROUP</span></div>
+          <label className="field">USER
+            <select value={user} onChange={(e) => { setUser(e.target.value); setOutcome("idle"); }} disabled={r.busy}>
+              <option value="engineer-a">engineer-a</option>
+              <option value="contractor-b">contractor-b</option>
+            </select>
+          </label>
+          <div className={`environment-status ${cls}`}>
+            <div className="status-icon">{outcome === "denied" ? <ShieldAlert size={22} /> : <UserCheck size={22} />}</div>
+            <div><strong>{outcome === "granted" ? "SIGNED IN" : outcome === "denied" ? "SIGN-IN BLOCKED" : outcome === "running" ? "AUTHENTICATING" : isMember ? "IN GROUP" : "NOT IN GROUP"}</strong><small>{GROUP}</small></div>
+          </div>
+          <div className="sim-actions">
+            <button className="button button-primary button-full" onClick={signIn} disabled={r.busy}><Play size={15} /> Sign in to AWS</button>
+            {isMember
+              ? <button className="button button-danger button-full" onClick={() => setMembership(false)} disabled={r.busy}>Remove from group</button>
+              : <button className="button button-muted button-full" onClick={() => setMembership(true)} disabled={r.busy}>Add to group</button>}
+            <button className="button button-quiet button-full" onClick={reset} disabled={r.busy}><RotateCcw size={14} /> Reset</button>
+          </div>
+        </aside>
+      </Shell>
+    </>
+  );
+}
+
+/* ---------- Scenario: EKS GitOps drift and rollback ---------- */
+
+const GITOPS_INTRO = [
+  { tone: "muted", text: "# Argo CD GitOps on private EKS · SIMULATION ONLY" },
+  { tone: "command", text: "$ argocd app get web" },
+  { tone: "success", text: "Sync: Synced · Health: Healthy · replicas: 3 · image: v1.0" },
+  { tone: "muted", text: "Git is the source of truth for the cluster." }
+];
+
+function GitopsScenario() {
+  const r = useRunner(GITOPS_INTRO);
+  const [git, setGit] = useState({ replicas: 3, image: "v1.0" });
+  const [cluster, setCluster] = useState({ replicas: 3, image: "v1.0", healthy: true });
+  const [sync, setSync] = useState("Synced");
+
+  const commitScale = () => {
+    r.push([{ tone: "command", text: "$ git commit -m 'scale web to 5 replicas' && git push" }]);
+    r.run([
+      { text: "Argo CD detected a new commit.", fx: () => { setGit((g) => ({ ...g, replicas: 5 })); setSync("OutOfSync"); } },
+      { tone: "warning", text: "Sync: OutOfSync. Auto-sync is applying the change..." },
+      { tone: "success", text: "Cluster now matches Git: 5 replicas running.", fx: () => { setCluster((c) => ({ ...c, replicas: 5 })); setSync("Synced"); } }
+    ]);
+  };
+
+  const drift = () => {
+    r.push([{ tone: "command", text: "$ kubectl scale deploy/web --replicas=1   # manual change" }]);
+    r.run([
+      { text: "Cluster changed outside of Git.", fx: () => { setCluster((c) => ({ ...c, replicas: 1 })); setSync("OutOfSync"); } },
+      { tone: "warning", text: "Argo CD: drift detected (cluster 1 vs Git).", fx: () => {} },
+      { tone: "success", text: "Self-heal reverted the cluster to the Git state.", fx: () => { setCluster((c) => ({ ...c, replicas: git.replicas })); setSync("Synced"); } }
+    ]);
+  };
+
+  const badDeploy = () => {
+    r.push([{ tone: "command", text: "$ git commit -m 'bump image to v9.9' && git push" }]);
+    r.run([
+      { text: "Argo CD synced the new image tag.", fx: () => { setGit((g) => ({ ...g, image: "v9.9" })); setCluster((c) => ({ ...c, image: "v9.9", healthy: false })); setSync("Synced"); } },
+      { tone: "danger", text: "Pods: ImagePullBackOff. Health: Degraded." },
+      { tone: "warning", text: "Fix path: revert the commit in Git rather than patching the cluster." }
+    ]);
+  };
+
+  const revert = () => {
+    r.push([{ tone: "command", text: "$ git revert HEAD && git push" }]);
+    r.run([
+      { text: "Argo CD detected the revert commit.", fx: () => { setGit((g) => ({ ...g, image: "v1.0" })); setSync("OutOfSync"); } },
+      { tone: "success", text: "Rolled back to image v1.0. Health: Healthy.", fx: () => { setCluster((c) => ({ ...c, image: "v1.0", healthy: true })); setSync("Synced"); } },
+      { tone: "muted", text: "The change history lives in Git, so rollback is reviewable." }
+    ]);
+  };
+
+  const reset = () => { r.reset(); setGit({ replicas: 3, image: "v1.0" }); setCluster({ replicas: 3, image: "v1.0", healthy: true }); setSync("Synced"); };
+  const bad = !cluster.healthy;
+  const cls = bad ? "destroyed" : sync === "OutOfSync" ? "restoring" : "";
+
+  return (
+    <>
+      <Brief title="GitOps delivery on private EKS" summary="Worked on private EKS environments with Argo CD delivery. Scale through Git, try a manual change, then ship a bad image and recover with a revert." tags={["EKS", "Argo CD", "GitOps", "Kubernetes"]} repo="terraform-aws-modules" />
+      <Shell title="eks / argocd-gitops" lines={r.lines}>
+        <TerminalPane lines={r.lines} busy={r.busy} label="kubectl · read-only simulation" />
+        <aside className="sim-control-pane">
+          <div className="control-heading"><GitBranch size={18} /><span>CLUSTER VS GIT</span></div>
+          <div className={`environment-status ${cls}`}>
+            <div className="status-icon"><GitBranch size={22} /></div>
+            <div><strong>{bad ? "DEGRADED" : sync.toUpperCase()}</strong><small>Git: {git.replicas} replicas · {git.image} &nbsp;|&nbsp; Cluster: {cluster.replicas} · {cluster.image}</small></div>
+          </div>
+          <div className="pod-grid" aria-label={`${cluster.replicas} pods`}>
+            {Array.from({ length: cluster.replicas }).map((_, i) => <span key={i} className={bad ? "pod bad" : "pod"} />)}
+          </div>
+          <div className="action-list">
+            <button className="action-btn" onClick={commitScale} disabled={r.busy || bad}><span>Commit: scale to 5 replicas</span></button>
+            <button className="action-btn" onClick={drift} disabled={r.busy || bad}><span>Manual change: kubectl scale to 1</span><small className="risk">DRIFT</small></button>
+            <button className="action-btn" onClick={badDeploy} disabled={r.busy || bad}><span>Deploy a bad image tag</span><small className="risk">BREAK</small></button>
+            <button className="action-btn" onClick={revert} disabled={r.busy || !bad}><span>Recover: git revert</span><small className="ok">FIX</small></button>
+          </div>
+          <div className="sim-actions"><button className="button button-quiet button-full" onClick={reset} disabled={r.busy}><RotateCcw size={14} /> Reset</button></div>
+        </aside>
+      </Shell>
+    </>
+  );
+}
+
+/* ---------- Scenario: Incident triage ---------- */
+
+const INCIDENTS = {
+  deploy: { label: "5xx spike after a deployment", steps: [
+    { tone: "danger", text: "[CloudWatch] Alarm: ALB HTTPCode_Target_5XX_Count above threshold." },
+    { text: "[ALB] Target health: new targets unhealthy, old targets healthy." },
+    { text: "[Pipeline] Correlating: a deployment finished 6 minutes before the alarm." },
+    { tone: "warning", text: "Decision: roll back first, investigate second." },
+    { tone: "success", text: "[Pipeline] Rolled back to the previous release. 5xx rate returning to baseline." },
+    { tone: "muted", text: "Follow-up: post-incident review, add a health check to the pipeline gate, update the runbook." }
+  ] },
+  db: { label: "Database connections exhausted", steps: [
+    { tone: "danger", text: "[CloudWatch] Alarm: RDS DatabaseConnections near the instance limit." },
+    { text: "[App] Timeouts increasing; connection pool errors in the logs." },
+    { text: "[RDS] Checking recent change: an application release raised its pool size per instance." },
+    { tone: "warning", text: "Decision: restore the pool setting and recycle the affected tasks." },
+    { tone: "success", text: "[App] Connections drop; latency recovers." },
+    { tone: "muted", text: "Follow-up: add a connection-count alert with headroom and document pool sizing in the runbook." }
+  ] },
+  iam: { label: "AccessDenied after an IAM change", steps: [
+    { tone: "danger", text: "[App] Jobs failing with AccessDenied on s3:GetObject." },
+    { text: "[CloudTrail] Looking up recent IAM policy changes for the role." },
+    { text: "[Git] The change came from a reviewed Terraform pull request that tightened the policy too far." },
+    { tone: "warning", text: "Decision: restore the missing permission through code, not a console edit." },
+    { tone: "success", text: "[Terraform] Applied the corrected least-privilege policy. Jobs succeed again." },
+    { tone: "muted", text: "Follow-up: add a policy test to the pull-request checks." }
+  ] }
+};
+const INCIDENT_INTRO = [
+  { tone: "muted", text: "# 24x7 incident triage · SIMULATION ONLY" },
+  { tone: "muted", text: "# Pick an incident and walk through detect → diagnose → mitigate → learn." }
+];
+
+function IncidentScenario() {
+  const r = useRunner(INCIDENT_INTRO);
+  const [key, setKey] = useState("deploy");
+  const [phase, setPhase] = useState("idle");
+
+  const start = () => {
+    setPhase("running");
+    r.push([{ tone: "command", text: `$ incident start "${INCIDENTS[key].label}"` }]);
+    r.run(INCIDENTS[key].steps.map((s) => ({ delay: 700, ...s })), () => setPhase("resolved"));
+  };
+  const reset = () => { r.reset(); setPhase("idle"); };
+  const cls = phase === "running" ? "destroying" : "";
+
+  return (
+    <>
+      <Brief title="Incident response that feeds back into runbooks" summary="Provided 24x7 incident response with CloudWatch, Datadog and Jira ITSM, then ran post-incident reviews. Pick a scenario to see the order of thinking. The incidents are illustrative." tags={["CloudWatch", "Datadog", "Jira ITSM", "Runbooks"]} />
+      <Shell title="operations / incident-triage" lines={r.lines}>
+        <TerminalPane lines={r.lines} busy={r.busy} label="ops · read-only simulation" />
+        <aside className="sim-control-pane">
+          <div className="control-heading"><Siren size={18} /><span>INCIDENT</span></div>
+          <label className="field">SCENARIO
+            <select value={key} onChange={(e) => { setKey(e.target.value); setPhase("idle"); }} disabled={r.busy}>
+              {Object.entries(INCIDENTS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+            </select>
+          </label>
+          <div className={`environment-status ${cls}`}>
+            <div className="status-icon"><Siren size={22} /></div>
+            <div><strong>{phase === "idle" ? "STANDBY" : phase === "running" ? "INCIDENT ACTIVE" : "RESOLVED"}</strong><small>{phase === "resolved" ? "Review and runbook update queued" : "Ready for a scenario"}</small></div>
+          </div>
+          <div className="sim-actions">
+            <button className="button button-danger button-full" onClick={start} disabled={r.busy}><Play size={15} /> Start incident</button>
+            <button className="button button-quiet button-full" onClick={reset} disabled={r.busy}><RotateCcw size={14} /> Reset</button>
+          </div>
+        </aside>
+      </Shell>
+    </>
+  );
+}
+
 /* ---------- Lab wrapper ---------- */
 
 const scenarios = [
   { id: "terraform", label: "Terraform lifecycle", Icon: Boxes, Component: TerraformSimulator, brief: { title: "Repeatable infrastructure through IaC", summary: "Destroy and rebuild an environment from code. This is the core idea behind the reusable Terraform patterns I worked on for private EKS and landing zones.", tags: ["Terraform", "IaC", "EKS", "Repeatability"], repo: "terraform-aws-modules" } },
   { id: "oidc", label: "Keyless CI/CD", Icon: KeyRound, Component: OidcScenario },
   { id: "scp", label: "Org guardrails", Icon: ShieldAlert, Component: ScpScenario },
-  { id: "dr", label: "AZ failover drill", Icon: Activity, Component: DrScenario }
+  { id: "dr", label: "AZ failover drill", Icon: Activity, Component: DrScenario },
+  { id: "sftp", label: "Vendor-isolated SFTP", Icon: FolderLock, Component: SftpScenario },
+  { id: "sso", label: "Entra SSO access", Icon: UserCheck, Component: SsoScenario },
+  { id: "gitops", label: "EKS GitOps", Icon: GitBranch, Component: GitopsScenario },
+  { id: "incident", label: "Incident triage", Icon: Siren, Component: IncidentScenario }
 ];
 
 export default function SimulationLab() {
@@ -315,7 +604,7 @@ export default function SimulationLab() {
         <div>
           <span className="eyebrow"><span className="eyebrow-dot" /> INTERACTIVE DEMONSTRATIONS</span>
           <h2>Simulation <span className="gradient-text">Lab</span></h2>
-          <p className="section-intro">Click through scripted scenarios based on my project work: infrastructure as code, keyless CI/CD, organization guardrails and failover drills. Everything runs in your browser and nothing connects to AWS, GitHub or Terraform.</p>
+          <p className="section-intro">Click through scripted scenarios based on my project work: infrastructure as code, keyless CI/CD, organization guardrails, failover drills, managed SFTP, SSO, GitOps and incident response. Everything runs in your browser and nothing connects to AWS, GitHub or Terraform.</p>
         </div>
         <span className="simulation-pill"><span /> SIMULATION MODE</span>
       </div>
