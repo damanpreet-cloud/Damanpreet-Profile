@@ -189,3 +189,6 @@
 @keyframes pop{from{transform:scale(.4);opacity:0}}
 @media(max-width:900px){.sim-control-pane .pod-grid{grid-column:span 2}}
 @media(prefers-reduced-motion:reduce){.pod{animation:none}}
+
+.cred-verify{display:inline-flex;align-items:center;gap:5px;margin-top:7px;color:var(--cyan);font:600 11px var(--mono);min-height:28px}
+.cred-verify:hover{text-decoration:underline}

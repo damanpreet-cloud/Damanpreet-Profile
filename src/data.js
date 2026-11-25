@@ -164,29 +164,26 @@ export const education = [
 
 // Add ONLY examinations you have successfully passed. While this list is empty, the section is hidden.
 export const certifications = [
+  { title: "AWS Certified Solutions Architect – Professional", detail: "Amazon Web Services · certification exam passed", year: "2026", url: "https://www.credly.com/badges/9c557a99-e420-433a-94c6-8925423825b4/" },
+  { title: "AWS Serverless Demonstrated", detail: "Amazon Web Services · hands-on AWS environment exam passed", year: "2026",url: "https://www.credly.com/badges/d6bb6324-52be-4d2f-8c92-7f79265b6fba" },
   { title: "AWS Certified Solutions Architect – Associate", detail: "Amazon Web Services · certification exam passed", year: "2022" }
 ];
 
-// Not yet passed, so shown separately so it cannot be mistaken for an earned certification.
-export const certificationsInProgress = [
-  { title: "AWS Certified Solutions Architect – Professional", detail: "Preparing for the exam", year: "In progress" }
-];
-
-export const learningCredentials = [
-  { title: "AWS Serverless Demonstrated", detail: "AWS learning credential (not a certification exam)", year: "2026" },
+export const learningCredentials = [  
   { title: "AWS Knowledge: Serverless – Training Badge", detail: "AWS training badge (not a certification exam)", year: "2026" },
-  { title: "Build Infrastructure with Terraform on Google Cloud", detail: "Google Cloud skill badge (not a certification exam)", year: "2026" },
-  { title: "Connecting Cloud Networks with NCC", detail: "Google Cloud learning credential (not a certification exam)", year: "Learning" }
+  { title: "Build Infrastructure with Terraform on Google Cloud", detail: "Google Cloud skill badge", year: "2026" },
+  { title: "Connecting Cloud Networks with NCC", detail: "Google Cloud learning credential", year: "Learning" }
 ];
 
 export const architectureTraining = [
-  { title: "TOGAF Foundation and Practitioner", detail: "Training completed. No certification exam is claimed.", year: "Training" }
+  { title: "TOGAF Foundation and Practitioner", detail: "Training completed.", year: "Training" }
 ];
 
 // Keep this list short: recruiters rarely wait for a long ticker to loop.
 // The $100K+ figure is cumulative across initiatives (not annual); keep it conservative until a breakdown is documented.
 export const highlights = [
   { tag: "EXPERIENCE", text: "18+ years in IT", href: "#experience" },
+  { tag: "CERTIFIED", text: "AWS Solutions Architect – Professional and AWS Serverless Demonstrated", href: "#education" },
   { tag: "AWS", text: "AWS infrastructure in Canada since 2022", href: "#experience" },
   { tag: "GOVERNANCE", text: "Multi-account AWS governance with Control Tower and SCPs", href: "#projects" },
   { tag: "PLATFORM", text: "Terraform and private EKS platforms", href: "#projects" },
