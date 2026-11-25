@@ -166,13 +166,13 @@ export const education = [
 export const certifications = [
   { title: "AWS Certified Solutions Architect – Professional", detail: "Amazon Web Services · certification exam passed", year: "2026", url: "https://www.credly.com/badges/9c557a99-e420-433a-94c6-8925423825b4/" },
   { title: "AWS Serverless Demonstrated", detail: "Amazon Web Services · hands-on AWS environment exam passed", year: "2026",url: "https://www.credly.com/badges/d6bb6324-52be-4d2f-8c92-7f79265b6fba" },
-  { title: "AWS Certified Solutions Architect – Associate", detail: "Amazon Web Services · certification exam passed", year: "2022" }
+  { title: "AWS Certified Solutions Architect – Associate", detail: "Amazon Web Services · certification exam passed", year: "2022",url: "https://www.credly.com/badges/4bfa5b0b-1dd3-43f4-bdab-e3f988cdf168" }
 ];
 
 export const learningCredentials = [  
-  { title: "AWS Knowledge: Serverless – Training Badge", detail: "AWS training badge (not a certification exam)", year: "2026" },
-  { title: "Build Infrastructure with Terraform on Google Cloud", detail: "Google Cloud skill badge", year: "2026" },
-  { title: "Connecting Cloud Networks with NCC", detail: "Google Cloud learning credential", year: "Learning" }
+  { title: "AWS Knowledge: Serverless – Training Badge", detail: "AWS training badge (not a certification exam)", year: "2026",url: "https://www.credly.com/badges/6b921b1b-c608-4a2f-8386-1b45ff59f914/" },
+  { title: "Build Infrastructure with Terraform on Google Cloud", detail: "Google Cloud skill badge", year: "2026",url: "https://www.credly.com/badges/6793eb01-6a21-4541-8dc5-728ef9f039b7/" },
+  { title: "Connecting Cloud Networks with NCC", detail: "Google Cloud learning credential", year: "Learning",url: "https://www.credly.com/badges/77f4c717-0604-4311-a819-312537b45d57/" }
 ];
 
 export const architectureTraining = [
