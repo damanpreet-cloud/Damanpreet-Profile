@@ -303,7 +303,7 @@ function App() {
             <p>I'm interested in AWS Cloud Engineer, Cloud Solutions Architect and infrastructure engineering opportunities across Ontario.</p>
             <div className="contact-actions">
               <a className="button button-primary" href="mailto:only.daman@gmail.com"><Mail size={16} /> Email me</a>
-              <a className="button button-outline" href="https://www.linkedin.com/in/damanpreetsingh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> LinkedIn <ArrowUpRight size={14} /></a>
+              <a className="button button-outline" href="https://www.linkedin.com/in/damanpreet-singh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> LinkedIn <ArrowUpRight size={14} /></a>
               <a className="button button-outline" href="https://github.com/damanpreet-cloud" target="_blank" rel="noreferrer"><Github size={16} /> GitHub <ArrowUpRight size={14} /></a>
             </div>
             <small className="contact-edit-note">only.daman@gmail.com · Kitchener, Ontario, Canada</small>
