@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Activity, AlertTriangle, ArrowUpRight, Boxes, FolderLock, GitBranch, Github, KeyRound, Play,
+  Activity, AlertTriangle, ArrowUpRight, Boxes, Bug, Lock, Search, Shield, FolderLock, GitBranch, Github, KeyRound, Play,
   RotateCcw, ShieldAlert, ShieldCheck, Siren, Terminal as TerminalIcon, UserCheck
 } from "lucide-react";
 import TerraformSimulator from "./TerraformSimulator.jsx";
@@ -580,12 +580,207 @@ function IncidentScenario() {
   );
 }
 
+
+/* ---------- Security scenarios (data-driven) ---------- */
+
+function ActionScenario({ cfg }) {
+  const r = useRunner(cfg.intro);
+  const [tally, setTally] = useState([0, 0]);
+  const attempt = (a) => {
+    r.push([{ tone: "command", text: `$ ${a.cmd}` }]);
+    r.run(a.steps.map((s) => ({ delay: 550, ...s })), () => setTally((t) => t.map((n, i) => (i === a.k ? n + 1 : n))));
+  };
+  const reset = () => { r.reset(); setTally([0, 0]); };
+  const Icon = cfg.Icon;
+  return (
+    <>
+      <Brief title={cfg.title} summary={cfg.summary} tags={cfg.tags} />
+      <Shell title={cfg.shell} lines={r.lines}>
+        <TerminalPane lines={r.lines} busy={r.busy} label="security · read-only simulation" />
+        <aside className="sim-control-pane">
+          <div className="control-heading"><Icon size={18} /><span>{cfg.heading}</span></div>
+          <div className="action-list">
+            {cfg.actions.map((a) => <button key={a.label} className="action-btn" onClick={() => attempt(a)} disabled={r.busy}><span>{a.label}</span><small className={a.tone}>{a.badge}</small></button>)}
+          </div>
+          <p className="sim-note">{cfg.note}</p>
+          <div className="tally">{cfg.tallyLabels.map((l, i) => <div key={l}><strong>{tally[i]}</strong><span>{l}</span></div>)}</div>
+          <div className="sim-actions"><button className="button button-quiet button-full" onClick={reset} disabled={r.busy}><RotateCcw size={14} /> Reset</button></div>
+        </aside>
+      </Shell>
+    </>
+  );
+}
+
+function PlaybookScenario({ cfg }) {
+  const r = useRunner(cfg.intro);
+  const [key, setKey] = useState(Object.keys(cfg.items)[0]);
+  const [phase, setPhase] = useState("idle");
+  const start = () => {
+    setPhase("running");
+    r.push([{ tone: "command", text: `$ ${cfg.startCmd} "${cfg.items[key].label}"` }]);
+    r.run(cfg.items[key].steps.map((s) => ({ delay: 700, ...s })), () => setPhase("resolved"));
+  };
+  const reset = () => { r.reset(); setPhase("idle"); };
+  const Icon = cfg.Icon;
+  return (
+    <>
+      <Brief title={cfg.title} summary={cfg.summary} tags={cfg.tags} />
+      <Shell title={cfg.shell} lines={r.lines}>
+        <TerminalPane lines={r.lines} busy={r.busy} label="security · read-only simulation" />
+        <aside className="sim-control-pane">
+          <div className="control-heading"><Icon size={18} /><span>{cfg.heading}</span></div>
+          <label className="field">FINDING
+            <select value={key} onChange={(e) => { setKey(e.target.value); setPhase("idle"); }} disabled={r.busy}>
+              {Object.entries(cfg.items).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+            </select>
+          </label>
+          <div className={`environment-status ${phase === "running" ? "destroying" : ""}`}>
+            <div className="status-icon"><Icon size={22} /></div>
+            <div><strong>{phase === "idle" ? "MONITORING" : phase === "running" ? "INVESTIGATING" : "CONTAINED"}</strong><small>{phase === "resolved" ? "Findings documented, follow-ups queued" : "Ready for a finding"}</small></div>
+          </div>
+          <p className="sim-note">{cfg.note}</p>
+          <div className="sim-actions">
+            <button className="button button-danger button-full" onClick={start} disabled={r.busy}><Play size={15} /> Investigate</button>
+            <button className="button button-quiet button-full" onClick={reset} disabled={r.busy}><RotateCcw size={14} /> Reset</button>
+          </div>
+        </aside>
+      </Shell>
+    </>
+  );
+}
+
+const VULN_CFG = {
+  Icon: Bug, shell: "security / vulnerability-triage", heading: "FINDINGS QUEUE", tallyLabels: ["REMEDIATED", "TRACKED"],
+  title: "Vulnerability triage and remediation",
+  summary: "Worked with security teams on vulnerability management across AWS, Windows and Linux, triaging findings from Wiz, Security Hub and Inspector and coordinating patching with engineering owners. Work a finding from detection to verified fix.",
+  tags: ["Wiz", "Inspector", "Security Hub", "Patch management"],
+  note: "Findings and priorities are illustrative. Real prioritization follows each organization's risk policy and SLAs.",
+  intro: [
+    { tone: "muted", text: "# Vulnerability management · SIMULATION ONLY" },
+    { tone: "muted", text: "# Priority comes from exposure, exploitability and asset criticality, not CVSS score alone." },
+    { tone: "normal", text: "Pick a finding to take from detect → prioritize → remediate → verify." }
+  ],
+  actions: [
+    { label: "Internet-facing server, known-exploited CVE", badge: "P1", tone: "risk", k: 0, cmd: "triage open finding-01", steps: [
+      { tone: "warning", text: "Finding: critical CVE on an internet-exposed EC2 instance with public exploit activity." },
+      { text: "Priority P1: exposure and exploitability outrank the raw score. Owner notified." },
+      { text: "Fix: patch through the standard pipeline (Ansible or Systems Manager) in the emergency window." },
+      { tone: "success", text: "Rescan: finding no longer detected. Ticket closed with evidence." }] },
+    { label: "Public S3 bucket flagged by AWS Config", badge: "P1", tone: "risk", k: 0, cmd: "triage open finding-02", steps: [
+      { tone: "warning", text: "Security Hub / Config: bucket allows public read." },
+      { text: "CloudTrail: the change traces back to a manual console edit." },
+      { text: "Fix: enable Block Public Access through a reviewed Terraform change, not another console edit." },
+      { tone: "success", text: "Config rule compliant. A guardrail is added to prevent a repeat." }] },
+    { label: "Internal Windows server, missing security update", badge: "P2", tone: "risk", k: 0, cmd: "triage open finding-03", steps: [
+      { tone: "warning", text: "Finding: security update missing on an internal server with no internet exposure." },
+      { text: "Priority P2: deploy to a pilot collection first, then production in the maintenance window." },
+      { text: "SCCM/WSUS: pilot servers patched and healthy after reboot." },
+      { tone: "success", text: "Production collection patched. Compliance report updated." }] },
+    { label: "Low severity on an isolated test host", badge: "P3", tone: "ok", k: 1, cmd: "triage open finding-04", steps: [
+      { text: "Finding: low severity, no network path from the internet, no sensitive data." },
+      { tone: "warning", text: "Decision: don't interrupt the team; fix it in the next routine patch cycle." },
+      { tone: "muted", text: "Tracked with an owner and a review date so it isn't forgotten." }] }
+  ]
+};
+
+const ALERT_CFG = {
+  Icon: Search, shell: "security / alert-investigation", heading: "SECURITY ALERT", startCmd: "investigate",
+  title: "Security alert investigation",
+  summary: "Used GuardDuty, Security Hub, CloudTrail and Athena to investigate findings and support root-cause analysis with the security team. Pick an alert and follow the order of thinking: detect, scope, contain, document.",
+  tags: ["GuardDuty", "CloudTrail", "Athena", "Security Hub"],
+  note: "Scenarios are illustrative. Real investigations depend on the logs, tooling and incident process in place.",
+  intro: [
+    { tone: "muted", text: "# Alert investigation · SIMULATION ONLY" },
+    { tone: "muted", text: "# Detect → scope with logs → contain → document." }
+  ],
+  items: {
+    ssh: { label: "SSH brute force against an EC2 instance", steps: [
+      { tone: "danger", text: "[GuardDuty] Repeated failed SSH logins against an instance." },
+      { text: "[Security Hub] Finding aggregated with severity and affected resource." },
+      { text: "[Athena] Query CloudTrail: a manual change opened port 22 to 0.0.0.0/0 yesterday." },
+      { tone: "warning", text: "Contain: close the rule, move the instance to a quarantine security group, snapshot for review." },
+      { tone: "success", text: "Rule closed through Terraform. Logs show no successful login from the source." },
+      { tone: "muted", text: "Follow-up: add a Config rule against open SSH, update the runbook, share findings with the security team." }] },
+    key: { label: "Unusual API calls from an IAM access key", steps: [
+      { tone: "danger", text: "[GuardDuty] API calls from an unusual location using an IAM user's access key." },
+      { text: "[Athena] Query CloudTrail by access key ID: calls made, source IPs, resources touched." },
+      { text: "Scope: read-only calls found; no IAM changes and no data downloads." },
+      { tone: "warning", text: "Contain: deactivate the key first, then rotate it and revoke active sessions." },
+      { tone: "success", text: "Replaced with short-lived access through IAM Identity Center. Old key deleted." },
+      { tone: "muted", text: "Follow-up: find where the key leaked, enable secret scanning, document the timeline." }] },
+    s3: { label: "S3 bucket made public", steps: [
+      { tone: "danger", text: "[Config / GuardDuty] Bucket policy changed to allow public access." },
+      { text: "[CloudTrail] Change made by a deployment role during a pipeline run." },
+      { text: "[Athena] Query S3 access logs: no external reads since the change." },
+      { tone: "warning", text: "Contain: enable Block Public Access at the account level." },
+      { tone: "success", text: "Policy corrected in code. No exposure confirmed." },
+      { tone: "muted", text: "Follow-up: add an SCP against disabling Block Public Access and a pipeline check." }] }
+  }
+};
+
+const EDGE_CFG = {
+  Icon: Shield, shell: "security / waf-network-firewall", heading: "SEND TRAFFIC", tallyLabels: ["BLOCKED", "ALLOWED"],
+  title: "Layered network defense: WAF and Network Firewall",
+  summary: "Supported AWS WAF and AWS Network Firewall alongside VPC and perimeter work. Send inbound and outbound traffic and see which layer responds.",
+  tags: ["AWS WAF", "Network Firewall", "Rate limiting", "Egress filtering"],
+  note: "Rules are illustrative. Real behavior depends on the rule groups, thresholds and scope-down statements configured. WAF is a layer, not a replacement for secure application code.",
+  intro: [
+    { tone: "muted", text: "# AWS WAF (inbound) + Network Firewall (outbound) · SIMULATION ONLY" },
+    { tone: "normal", text: "Choose a request to send." }
+  ],
+  actions: [
+    { label: "Normal customer request", badge: "SAFE", tone: "ok", k: 1, cmd: "curl https://app.example.com/orders?id=1042", steps: [
+      { tone: "warning", text: "Evaluating WAF rules..." }, { tone: "success", text: "No rule matched. Request allowed to the load balancer." }] },
+    { label: "Request with a SQL-injection-style string", badge: "RISKY", tone: "risk", k: 0, cmd: "curl 'https://app.example.com/search?q=%27+OR+1%3D1--'", steps: [
+      { tone: "warning", text: "Evaluating WAF rules..." }, { tone: "danger", text: "403: blocked by a managed SQL-injection rule group." }, { tone: "muted", text: "Logged for review. The application never saw the request." }] },
+    { label: "Burst of requests from one IP", badge: "RISKY", tone: "risk", k: 0, cmd: "load-test --source 203.0.113.9 --rate high", steps: [
+      { tone: "warning", text: "Evaluating WAF rules..." }, { tone: "danger", text: "Rate-based rule triggered: source IP blocked temporarily." }, { tone: "muted", text: "Users on other IPs are unaffected." }] },
+    { label: "Outbound call to an approved domain", badge: "SAFE", tone: "ok", k: 1, cmd: "curl https://api.partner.example/status   # from a workload", steps: [
+      { tone: "warning", text: "Network Firewall: checking the domain allow list..." }, { tone: "success", text: "Domain approved. Egress allowed." }] },
+    { label: "Outbound call to an unknown domain", badge: "RISKY", tone: "risk", k: 0, cmd: "curl https://unknown-host.example/upload   # from a workload", steps: [
+      { tone: "warning", text: "Network Firewall: checking the domain allow list..." }, { tone: "danger", text: "Domain not on the allow list. Egress dropped and logged." }, { tone: "muted", text: "Limits data exfiltration and command-and-control paths from a compromised workload." }] }
+  ]
+};
+
+const KMS_CFG = {
+  Icon: Lock, shell: "security / kms-secrets-access", heading: "TRY AN ACTION", tallyLabels: ["BLOCKED", "ALLOWED"],
+  title: "Encryption, secrets and separation of duties",
+  summary: "Implemented KMS encryption, Secrets Manager and least-privilege IAM. Try actions as different roles and see where key policies and guardrails say no.",
+  tags: ["KMS", "Secrets Manager", "IAM", "Least privilege"],
+  note: "Simplified. The real result depends on IAM policies, the key policy, grants and any SCPs.",
+  intro: [
+    { tone: "muted", text: "# KMS + Secrets Manager · key policies and separation of duties · SIMULATION ONLY" },
+    { tone: "normal", text: "Choose an action to attempt as a given role." }
+  ],
+  actions: [
+    { label: "App role reads its own secret", badge: "SAFE", tone: "ok", k: 1, cmd: "aws secretsmanager get-secret-value --secret-id prod/app/db   # app-role", steps: [
+      { tone: "warning", text: "Checking IAM policy, key policy and secret policy..." }, { tone: "success", text: "Allowed: app-role may read this secret and use its KMS key. The call is logged in CloudTrail." }] },
+    { label: "Analyst role reads the same secret", badge: "RISKY", tone: "risk", k: 0, cmd: "aws secretsmanager get-secret-value --secret-id prod/app/db   # analyst-role", steps: [
+      { tone: "danger", text: "AccessDeniedException: analyst-role is not permitted to read this secret or use its key." }, { tone: "muted", text: "Least privilege: access to logs does not imply access to secrets." }] },
+    { label: "Key administrator tries to decrypt data", badge: "RISKY", tone: "risk", k: 0, cmd: "aws kms decrypt --key-id alias/prod-data   # key-admin-role", steps: [
+      { tone: "danger", text: "AccessDenied: the key policy grants management, not usage, to key-admin-role." }, { tone: "muted", text: "Separation of duties: the people who manage keys cannot use them to read data." }] },
+    { label: "Rotate a secret on a schedule", badge: "SAFE", tone: "ok", k: 1, cmd: "aws secretsmanager rotate-secret --secret-id prod/app/db", steps: [
+      { text: "Rotation creates a new credential, tests it, then promotes it." }, { tone: "success", text: "Applications read the current version. No credentials in code or config files." }] },
+    { label: "Schedule deletion of the encryption key", badge: "RISKY", tone: "risk", k: 0, cmd: "aws kms schedule-key-deletion --key-id alias/prod-data   # developer-role", steps: [
+      { tone: "warning", text: "Evaluating SCPs and key policy..." }, { tone: "danger", text: "Denied by an organization guardrail (illustrative SCP)." }, { tone: "muted", text: "Key deletion becomes irreversible after the waiting period, so it stays tightly restricted." }] }
+  ]
+};
+
+const VulnScenario = () => <ActionScenario cfg={VULN_CFG} />;
+const AlertScenario = () => <PlaybookScenario cfg={ALERT_CFG} />;
+const EdgeScenario = () => <ActionScenario cfg={EDGE_CFG} />;
+const KmsScenario = () => <ActionScenario cfg={KMS_CFG} />;
+
 /* ---------- Lab wrapper ---------- */
 
 const scenarios = [
   { id: "terraform", label: "Terraform lifecycle", Icon: Boxes, Component: TerraformSimulator, brief: { title: "Repeatable infrastructure through IaC", summary: "Destroy and rebuild an environment from code. This is the core idea behind the reusable Terraform patterns I worked on for private EKS and landing zones.", tags: ["Terraform", "IaC", "EKS", "Repeatability"], repo: "terraform-aws-modules" } },
   { id: "oidc", label: "Keyless CI/CD", Icon: KeyRound, Component: OidcScenario },
   { id: "scp", label: "Org guardrails", Icon: ShieldAlert, Component: ScpScenario },
+  { id: "vuln", label: "Vulnerability triage", Icon: Bug, Component: VulnScenario },
+  { id: "alert", label: "Alert investigation", Icon: Search, Component: AlertScenario },
+  { id: "edge", label: "WAF & Network Firewall", Icon: Shield, Component: EdgeScenario },
+  { id: "kms", label: "KMS & secrets", Icon: Lock, Component: KmsScenario },
   { id: "dr", label: "AZ failover drill", Icon: Activity, Component: DrScenario },
   { id: "sftp", label: "Vendor-isolated SFTP", Icon: FolderLock, Component: SftpScenario },
   { id: "sso", label: "Entra SSO access", Icon: UserCheck, Component: SsoScenario },
@@ -604,7 +799,7 @@ export default function SimulationLab() {
         <div>
           <span className="eyebrow"><span className="eyebrow-dot" /> INTERACTIVE DEMONSTRATIONS</span>
           <h2>Simulation <span className="gradient-text">Lab</span></h2>
-          <p className="section-intro">Click through scripted scenarios based on my project work: infrastructure as code, keyless CI/CD, organization guardrails, failover drills, managed SFTP, SSO, GitOps and incident response. Everything runs in your browser and nothing connects to AWS, GitHub or Terraform.</p>
+          <p className="section-intro">Click through scripted scenarios based on my project work: infrastructure as code, keyless CI/CD, organization guardrails, vulnerability triage, security alert investigation, WAF and Network Firewall, KMS and secrets, failover drills, managed SFTP, SSO, GitOps and incident response. Everything runs in your browser and nothing connects to AWS, GitHub or Terraform.</p>
         </div>
         <span className="simulation-pill"><span /> SIMULATION MODE</span>
       </div>

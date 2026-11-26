@@ -2,7 +2,7 @@ export const expertise = [
   { group: "Cloud platforms", items: ["Amazon Web Services", "Microsoft Azure", "Google Cloud", "Hybrid cloud"] },
   { group: "Infrastructure & networking", items: ["VPC & network architecture", "Transit Gateway", "Direct Connect & VPN", "DNS, load balancing", "Palo Alto (Panorama), Cisco & WAF", "Windows & Linux"] },
   { group: "Automation & platforms", items: ["Terraform / IaC", "Kubernetes, EKS, ECS, AKS, GKE", "Docker", "GitHub Actions", "Argo CD", "Ansible & PowerShell"] },
-  { group: "Security & operations", items: ["IAM & least privilege", "Cloud governance", "KMS & Secrets Manager", "GuardDuty & Security Hub", "Wiz & Darktrace", "Monitoring & incident response", "FinOps"] },
+  { group: "Security & operations", items: ["IAM & least privilege", "Cloud governance", "KMS & Secrets Manager", "GuardDuty, Security Hub & Inspector", "Wiz & Darktrace", "Vulnerability management & patching", "CloudTrail & Athena investigation", "Monitoring & incident response", "FinOps"] },
   { group: "Identity & endpoint", items: ["Entra ID SSO (SAML, SCIM)", "Active Directory", "Group Policy", "ADFS", "Intune", "SCCM & WSUS", "Microsoft 365"] },
   { group: "Resilience & recovery", items: ["AWS Elastic Disaster Recovery", "Veeam", "Multi-AZ failover testing", "Backup & recovery planning", "Runbooks", "Post-incident reviews"] }
 ];
@@ -11,9 +11,9 @@ export const experience = [
   {
     role: "Network & Systems Administrator | AWS Cloud Infrastructure & Operations",
     company: "Numeris",
-    link: "https://www.linkedin.com/in/damanpreetsingh-chadha/",
+    link: "https://www.linkedin.com/in/damanpreet-singh-chadha/",
     dates: "May 2022 – September 2026 · North York, Ontario, Canada",
-    detail: "Designed and supported an eight-account AWS Organization, built reusable Terraform modules across 3 environments, and replaced long-lived AWS credentials with GitHub Actions OIDC across 30+ repositories. Supported EKS and ECS platforms, Entra ID SSO, security monitoring and remediation, and 24x7 on-call (about 10 incidents and 8–10 daily Jira requests a week) for five engineering teams and 30+ engineers."
+    detail: "Designed and supported an eight-account AWS Organization, built reusable Terraform modules across 3 environments, and replaced long-lived AWS credentials with GitHub Actions OIDC across 30+ repositories. Supported EKS and ECS platforms and Entra ID SSO, worked with security teams on vulnerability management, patching and remediation using Wiz, Darktrace, Security Hub, GuardDuty and Inspector, and covered 24x7 on-call (about 10 incidents and 8–10 daily Jira requests a week) for five engineering teams and 30+ engineers."
   },
   {
     role: "Information Technology Manager",
@@ -139,6 +139,14 @@ export const projects = [
     summary: "Built Entra ID enterprise-application SSO (SAML, SCIM) for AWS, Salesforce and other applications with access managed through AD groups, and supported Active Directory, Group Policy, ADFS, Intune, SCCM and WSUS.",
     outcome: "Single sign-on with group-based access and managed Windows endpoints.",
     tags: ["Entra ID", "ADFS", "Intune", "SCCM", "WSUS"]
+  },
+  {
+    number: "09",
+    title: "Vulnerability management & security posture",
+    category: "Security • AWS • Operations",
+    summary: "Worked with security teams on vulnerability management and remediation across AWS, Windows and Linux, using Wiz, Darktrace, Security Hub, GuardDuty, Inspector, Config, CloudTrail and Athena for posture review and investigation, and coordinating patching with engineering owners.",
+    outcome: "Security findings that are prioritized, assigned, fixed and verified instead of sitting in a queue.",
+    tags: ["Wiz", "Darktrace", "Security Hub", "GuardDuty", "Inspector", "Athena"]
   }
 ];
 
@@ -188,5 +196,6 @@ export const highlights = [
   { tag: "GOVERNANCE", text: "Multi-account AWS governance with Control Tower and SCPs", href: "#projects" },
   { tag: "PLATFORM", text: "Terraform and private EKS platforms", href: "#projects" },
   { tag: "SECURITY", text: "GitHub Actions OIDC across 30+ repositories", href: "#projects" },
+  { tag: "VULN MGMT", text: "Vulnerability remediation with Wiz, Security Hub and Inspector", href: "#simulator" },
   { tag: "COST", text: "$100K+ cumulative savings across initiatives (not annual)", href: "#about" }
 ];

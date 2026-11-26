@@ -1,6 +1,6 @@
-# Damanpreet Singh Chadha | Cloud Solutions Architect Portfolio
+# Damanpreet Singh Chadha | Senior Cloud & Platform Engineer Portfolio
 
-A React + Vite portfolio designed for GitHub Pages, with an interactive Simulation Lab (Terraform lifecycle, keyless CI/CD, organization guardrails and AZ failover etc.).
+A React + Vite portfolio designed for GitHub Pages, with an interactive Simulation Lab (Terraform lifecycle, keyless CI/CD, organization guardrails, vulnerability triage, alert investigation, WAF and Network Firewall, KMS and secrets, AZ failover, SFTP, SSO, GitOps and incident triage).
 
 ## Important: simulator safety
 

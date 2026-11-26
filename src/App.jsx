@@ -184,10 +184,10 @@ function App() {
         <section className="hero section-wrap" id="home">
           <div className="hero-grid">
             <motion.div className="hero-copy" initial="hidden" animate="visible" variants={fadeUp}>
-              <div className="availability"><span className="availability-dot" /> OPEN TO CLOUD SOLUTION ARCHITECT, AWS CLOUD ENGINEER & CLOUD SECURITY ROLES</div>
+              <div className="availability"><span className="availability-dot" /> OPEN TO SENIOR CLOUD & PLATFORM ENGINEER, SOLUTION ARCHITECT & CLOUD SECURITY ROLES</div>
               <p className="hero-kicker">HELLO, I'M</p>
               <h1>Damanpreet<br /><span className="gradient-text">Singh Chadha.</span></h1>
-              <h2>Cloud Solutions Architect <span className="hero-separator">/</span> AWS Engineer</h2>
+              <h2>Senior Cloud & Platform Engineer <span className="hero-separator">/</span> Solutions Architect</h2>
               <p className="hero-description">I design, secure and modernize enterprise infrastructure across AWS, hybrid cloud, networking and automation. I bring an engineering-first approach to building platforms that teams can operate with confidence.</p>
               <div className="hero-actions">
                 <a className="button button-primary" href="https://www.linkedin.com/in/damanpreet-singh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> View LinkedIn</a>
@@ -221,6 +221,7 @@ function App() {
               <p className="about-lead">I am an IT infrastructure and cloud architecture professional with <strong>18+ years of experience</strong> across enterprise networking, systems administration, hybrid infrastructure and public cloud.</p>
               <p>My career has progressed from network engineering and Linux systems administration through infrastructure leadership to cloud solution architecture. That breadth helps me connect architectural decisions to the realities of security, operations, reliability and cost.</p>
               <p>My recent work has focused on AWS foundations, multi-account governance, private Kubernetes platforms, Terraform automation, CI/CD identity, cloud networking and production support for engineering teams.</p>
+              <p>Security is part of how I build platforms. I work with security teams on vulnerability management and remediation, use Security Hub, GuardDuty, Inspector, CloudTrail and Athena for posture and investigation, and review findings from Wiz and Darktrace with engineering owners.</p>
               <div className="about-callout"><Award size={20} /><div><strong>Outcome-oriented infrastructure</strong><span>Architecture that balances resilience, security, cost and operational supportability.</span></div></div>
             </div>
             <div className="about-stats">
@@ -300,7 +301,7 @@ function App() {
           <div className="contact-panel">
             <span className="eyebrow">LET'S CONNECT</span>
             <h2>Have a cloud challenge<br /><span className="gradient-text">worth solving?</span></h2>
-            <p>I'm interested in AWS Cloud Engineer, Cloud Solutions Architect and infrastructure engineering opportunities across Ontario.</p>
+            <p>I'm interested in Senior Cloud & Platform Engineer, Solutions Architect and cloud security opportunities across Ontario.</p>
             <div className="contact-actions">
               <a className="button button-primary" href="mailto:only.daman@gmail.com"><Mail size={16} /> Email me</a>
               <a className="button button-outline" href="https://www.linkedin.com/in/damanpreet-singh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> LinkedIn <ArrowUpRight size={14} /></a>
