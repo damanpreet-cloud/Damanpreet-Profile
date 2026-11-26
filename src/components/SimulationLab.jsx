@@ -774,19 +774,21 @@ const KmsScenario = () => <ActionScenario cfg={KMS_CFG} />;
 /* ---------- Lab wrapper ---------- */
 
 const scenarios = [
-  { id: "terraform", label: "Terraform lifecycle", Icon: Boxes, Component: TerraformSimulator, brief: { title: "Repeatable infrastructure through IaC", summary: "Destroy and rebuild an environment from code. This is the core idea behind the reusable Terraform patterns I worked on for private EKS and landing zones.", tags: ["Terraform", "IaC", "EKS", "Repeatability"], repo: "terraform-aws-modules" } },
-  { id: "oidc", label: "Keyless CI/CD", Icon: KeyRound, Component: OidcScenario },
-  { id: "scp", label: "Org guardrails", Icon: ShieldAlert, Component: ScpScenario },
-  { id: "vuln", label: "Vulnerability triage", Icon: Bug, Component: VulnScenario },
-  { id: "alert", label: "Alert investigation", Icon: Search, Component: AlertScenario },
-  { id: "edge", label: "WAF & Network Firewall", Icon: Shield, Component: EdgeScenario },
-  { id: "kms", label: "KMS & secrets", Icon: Lock, Component: KmsScenario },
-  { id: "dr", label: "AZ failover drill", Icon: Activity, Component: DrScenario },
-  { id: "sftp", label: "Vendor-isolated SFTP", Icon: FolderLock, Component: SftpScenario },
-  { id: "sso", label: "Entra SSO access", Icon: UserCheck, Component: SsoScenario },
-  { id: "gitops", label: "EKS GitOps", Icon: GitBranch, Component: GitopsScenario },
-  { id: "incident", label: "Incident triage", Icon: Siren, Component: IncidentScenario }
+  { id: "terraform", group: "Platform & automation", label: "Terraform lifecycle", Icon: Boxes, Component: TerraformSimulator, brief: { title: "Repeatable infrastructure through IaC", summary: "Destroy and rebuild an environment from code. This is the core idea behind the reusable Terraform patterns I worked on for private EKS and landing zones.", tags: ["Terraform", "IaC", "EKS", "Repeatability"], repo: "terraform-aws-modules" } },
+  { id: "oidc", group: "Security & identity", label: "Keyless CI/CD", Icon: KeyRound, Component: OidcScenario },
+  { id: "scp", group: "Security & identity", label: "Org guardrails", Icon: ShieldAlert, Component: ScpScenario },
+  { id: "vuln", group: "Security & identity", label: "Vulnerability triage", Icon: Bug, Component: VulnScenario },
+  { id: "alert", group: "Security & identity", label: "Alert investigation", Icon: Search, Component: AlertScenario },
+  { id: "edge", group: "Security & identity", label: "WAF & Network Firewall", Icon: Shield, Component: EdgeScenario },
+  { id: "kms", group: "Security & identity", label: "KMS & secrets", Icon: Lock, Component: KmsScenario },
+  { id: "dr", group: "Resilience & operations", label: "AZ failover drill", Icon: Activity, Component: DrScenario },
+  { id: "sftp", group: "Platform & automation", label: "Vendor-isolated SFTP", Icon: FolderLock, Component: SftpScenario },
+  { id: "sso", group: "Security & identity", label: "Entra SSO access", Icon: UserCheck, Component: SsoScenario },
+  { id: "gitops", group: "Platform & automation", label: "EKS GitOps", Icon: GitBranch, Component: GitopsScenario },
+  { id: "incident", group: "Resilience & operations", label: "Incident triage", Icon: Siren, Component: IncidentScenario }
 ];
+
+const groups = ["Platform & automation", "Security & identity", "Resilience & operations"];
 
 export default function SimulationLab() {
   const [active, setActive] = useState("terraform");
@@ -804,9 +806,16 @@ export default function SimulationLab() {
         <span className="simulation-pill"><span /> SIMULATION MODE</span>
       </div>
 
-      <div className="lab-tabs" role="tablist" aria-label="Simulation scenarios">
-        {scenarios.map(({ id, label, Icon }) => (
-          <button key={id} role="tab" aria-selected={active === id} className={active === id ? "lab-tab active" : "lab-tab"} onClick={() => setActive(id)}><Icon size={16} />{label}</button>
+      <div className="lab-groups" role="tablist" aria-label="Simulation scenarios">
+        {groups.map((g) => (
+          <div className="lab-group" key={g}>
+            <span className="lab-group-label">{g}</span>
+            <div className="lab-tabs">
+              {scenarios.filter((s) => s.group === g).map(({ id, label, Icon }) => (
+                <button key={id} role="tab" aria-selected={active === id} className={active === id ? "lab-tab active" : "lab-tab"} onClick={() => setActive(id)}><Icon size={16} /><span>{label}</span></button>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
 
