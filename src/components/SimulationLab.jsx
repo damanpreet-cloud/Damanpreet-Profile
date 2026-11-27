@@ -792,6 +792,11 @@ const groups = ["Platform & automation", "Security & identity", "Resilience & op
 
 export default function SimulationLab() {
   const [active, setActive] = useState("terraform");
+  useEffect(() => {
+    const h = (e) => { if (scenarios.some((s) => s.id === e.detail)) setActive(e.detail); };
+    window.addEventListener("open-sim", h);
+    return () => window.removeEventListener("open-sim", h);
+  }, []);
   const current = scenarios.find((s) => s.id === active);
   const Current = current.Component;
 

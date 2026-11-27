@@ -104,6 +104,8 @@ const tabs = [
 
 function TabBar() {
   const [active, setActive] = useState("home");
+  const [seenLab, setSeenLab] = useState(false);
+  useEffect(() => { if (active === "simulator") setSeenLab(true); }, [active]);
   useEffect(() => {
     const ids = ["home", "about", "expertise", "experience", "projects", "repos", "simulator", "references", "education", "contact"];
     const map = { about: "home", expertise: "experience", repos: "projects", references: "contact", education: "contact" };
@@ -117,7 +119,7 @@ function TabBar() {
     <nav className="tab-bar" aria-label="Primary">
       {tabs.map(({ id, label, Icon }) => (
         <a key={id} href={`#${id}`} className={active === id ? "tab active" : "tab"} aria-current={active === id ? "true" : undefined}>
-          <Icon size={20} strokeWidth={active === id ? 2.4 : 1.9} /><span>{label}</span>
+          <Icon size={20} strokeWidth={active === id ? 2.4 : 1.9} /><span>{label}</span>{id === "simulator" && !seenLab && <i className="tab-ping" aria-hidden="true" />}
         </a>
       ))}
     </nav>
@@ -165,6 +167,11 @@ function CredentialGroup({ title, note, items }) {
   );
 }
 
+function openSim(id) {
+  window.dispatchEvent(new CustomEvent("open-sim", { detail: id }));
+  document.getElementById("simulator")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function App() {
   const nav = ["About", "Expertise", "Experience", "Projects", "Repos", "Simulator", "Contact"];
 
@@ -175,7 +182,9 @@ function App() {
         <a href="#home" className="brand"><span className="brand-mark">DS</span><span>DAMANPREET<span className="brand-dot">.</span></span></a>
         <a className="header-connect" href="#contact">Connect <ArrowUpRight size={13} /></a>
         <nav className="nav-links">
-          {nav.map((item) => <a key={item} href={`#${item.toLowerCase()}`}>{item}</a>)}
+          {nav.map((item) => item === "Simulator"
+            ? <a key={item} className="nav-sim" href="#simulator"><span className="nav-sim-dot" />Simulations<em>NEW</em></a>
+            : <a key={item} href={`#${item.toLowerCase()}`}>{item}</a>)}
           <a className="nav-cta" href="#contact">Let's connect <ArrowUpRight size={14} /></a>
         </nav>
       </header>
@@ -190,7 +199,8 @@ function App() {
               <h2>Senior Cloud & Platform Engineer <span className="hero-separator">/</span> Solutions Architect</h2>
               <p className="hero-description">I design, secure and modernize enterprise infrastructure across AWS, hybrid cloud, networking and automation. I bring an engineering-first approach to building platforms that teams can operate with confidence.</p>
               <div className="hero-actions">
-                <a className="button button-primary" href="https://www.linkedin.com/in/damanpreet-singh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> View LinkedIn</a>
+                <a className="button button-primary button-pulse" href="#simulator"><Terminal size={16} /> Try the Simulation Lab</a>
+                <a className="button button-outline" href="https://www.linkedin.com/in/damanpreet-singh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> View LinkedIn</a>
                 <a className="button button-outline" href="#projects">Explore Technical Projects <ArrowRight size={16} /></a>
               </div>
               <div className="hero-proof">
@@ -212,6 +222,23 @@ function App() {
             </motion.div>
           </div>
           <a className="scroll-cue" href="#about"><span>SCROLL TO EXPLORE</span><ArrowDown size={14} /></a>
+        </section>
+
+        <section className="section-wrap sim-teaser-wrap" aria-label="Simulation Lab preview">
+          <div className="sim-teaser">
+            <div className="sim-teaser-copy">
+              <span className="sim-teaser-kicker"><span className="live-dot" /> INTERACTIVE · RUNS IN YOUR BROWSER</span>
+              <h3>Don't just read the resume. <span className="gradient-text">Run it.</span></h3>
+              <p>Twelve hands-on scenarios from my project work, seven of them on security and identity. Pick one and watch it play out.</p>
+              <p className="sim-teaser-prompt"><span>$</span> run simulation --security<i className="cursor" /></p>
+            </div>
+            <div className="sim-teaser-actions">
+              {[["vuln", "Vulnerability triage"], ["alert", "Alert investigation"], ["edge", "WAF & Network Firewall"], ["kms", "KMS & secrets"], ["terraform", "Terraform lifecycle"]].map(([id, label]) => (
+                <button key={id} className="sim-chip" onClick={() => openSim(id)}>{label}<ArrowRight size={13} /></button>
+              ))}
+              <a className="button button-primary button-pulse" href="#simulator"><Terminal size={16} /> Open the Simulation Lab</a>
+            </div>
+          </div>
         </section>
 
         <section className="section section-wrap" id="about">
