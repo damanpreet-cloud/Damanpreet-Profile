@@ -197,7 +197,7 @@ function App() {
               <p className="hero-kicker">HELLO, I'M</p>
               <h1>Damanpreet<br /><span className="gradient-text">Singh Chadha.</span></h1>
               <h2>Senior Cloud & Platform Engineer <span className="hero-separator">/</span> Solutions Architect</h2>
-              <p className="hero-description">I design, secure and modernize enterprise infrastructure across AWS, hybrid cloud, networking and automation. I bring an engineering-first approach to building platforms that teams can operate with confidence.</p>
+              <p className="hero-description">I design, secure and modernize enterprise infrastructure across AWS, Azure, hybrid cloud, networking and automation. I bring an engineering-first approach to building platforms that teams can operate with confidence.</p>
               <div className="hero-actions">
                 <a className="button button-primary button-pulse" href="#simulator"><Terminal size={16} /> Try the Simulation Lab</a>
                 <a className="button button-outline" href="https://www.linkedin.com/in/damanpreet-singh-chadha/" target="_blank" rel="noreferrer"><Linkedin size={16} /> View LinkedIn</a>
@@ -229,11 +229,11 @@ function App() {
             <div className="sim-teaser-copy">
               <span className="sim-teaser-kicker"><span className="live-dot" /> INTERACTIVE · RUNS IN YOUR BROWSER</span>
               <h3>Don't just read the resume. <span className="gradient-text">Run it.</span></h3>
-              <p>Twelve hands-on scenarios from my project work, seven of them on security and identity. Pick one and watch it play out.</p>
+              <p>Thirteen hands-on scenarios from my project work, eight of them on security and identity. Pick one and watch it play out.</p>
               <p className="sim-teaser-prompt"><span>$</span> run simulation --security<i className="cursor" /></p>
             </div>
             <div className="sim-teaser-actions">
-              {[["vuln", "Vulnerability triage"], ["alert", "Alert investigation"], ["edge", "WAF & Network Firewall"], ["kms", "KMS & secrets"], ["terraform", "Terraform lifecycle"]].map(([id, label]) => (
+              {[["vuln", "Vulnerability triage"], ["alert", "Alert investigation"], ["edge", "WAF & Network Firewall"], ["kms", "KMS & secrets"], ["aks", "Azure AKS access"], ["terraform", "Terraform lifecycle"]].map(([id, label]) => (
                 <button key={id} className="sim-chip" onClick={() => openSim(id)}>{label}<ArrowRight size={13} /></button>
               ))}
               <a className="button button-primary button-pulse" href="#simulator"><Terminal size={16} /> Open the Simulation Lab</a>
@@ -247,7 +247,7 @@ function App() {
             <div className="about-main">
               <p className="about-lead">I am an IT infrastructure and cloud architecture professional with <strong>18+ years of experience</strong> across enterprise networking, systems administration, hybrid infrastructure and public cloud.</p>
               <p>My career has progressed from network engineering and Linux systems administration through infrastructure leadership to cloud solution architecture. That breadth helps me connect architectural decisions to the realities of security, operations, reliability and cost.</p>
-              <p>My recent work has focused on AWS foundations, multi-account governance, private Kubernetes platforms, Terraform automation, CI/CD identity, cloud networking and production support for engineering teams.</p>
+              <p>My recent work has focused on AWS foundations, Azure AKS and Entra ID identity, multi-account governance, private Kubernetes platforms, Terraform automation, CI/CD identity, cloud networking and production support for engineering teams.</p>
               <p>Security is part of how I build platforms. I work with security teams on vulnerability management and remediation, use Security Hub, GuardDuty, Inspector, CloudTrail and Athena for posture and investigation, and review findings from Wiz and Darktrace with engineering owners.</p>
               <div className="about-callout"><Award size={20} /><div><strong>Outcome-oriented infrastructure</strong><span>Architecture that balances resilience, security, cost and operational supportability.</span></div></div>
             </div>
@@ -291,7 +291,7 @@ function App() {
         </section>
 
         <section className="section section-wrap" id="repos">
-          <SectionTitle eyebrow="05 / REFERENCE IMPLEMENTATIONS" title="Code you can" accent="read and run." description="Built with placeholder names and account IDs. They show how I approach landing zones, keyless CI/CD, reusable modules, cost, resilience and AI agent safety." />
+          <SectionTitle eyebrow="05 / REFERENCE IMPLEMENTATIONS" title="Code you can" accent="read and run." description="Built with placeholder names and account IDs. They show how I approach landing zones, keyless CI/CD, reusable modules, Azure AKS and identity, cost, resilience and AI agent safety." />
           <div className="repo-grid">
             {repos.map((repo) => <a className="repo-card" key={repo.name} href={`https://github.com/damanpreet-cloud/${repo.name}`} target="_blank" rel="noreferrer">
               <div className="repo-top"><Github size={16} /><span>{repo.name}</span><ArrowUpRight size={15} /></div>

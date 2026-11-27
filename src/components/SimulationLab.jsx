@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Activity, AlertTriangle, ArrowUpRight, Boxes, Bug, Lock, Search, Shield, FolderLock, GitBranch, Github, KeyRound, Play,
+  Activity, AlertTriangle, ArrowUpRight, Boxes, Bug, Cloud, Lock, Search, Shield, FolderLock, GitBranch, Github, KeyRound, Play,
   RotateCcw, ShieldAlert, ShieldCheck, Siren, Terminal as TerminalIcon, UserCheck
 } from "lucide-react";
 import TerraformSimulator from "./TerraformSimulator.jsx";
@@ -426,6 +426,103 @@ function SsoScenario() {
   );
 }
 
+/* ---------- Scenario: Azure AKS access with Entra ID + Azure RBAC ---------- */
+
+const AKS_GROUPS = { admins: "sg-aks-admins", readers: "sg-aks-readers", none: "no AKS group" };
+const AKS_ACTIONS = {
+  credentials: { label: "Get cluster credentials", cmd: "az aks get-credentials -g rg-platform-dev -n aks-platform-dev", need: "any" },
+  pods: { label: "List pods", cmd: "kubectl get pods -n data-lake", need: "any" },
+  secrets: { label: "Read secrets", cmd: "kubectl get secrets -n data-lake", need: "admins" },
+  delete: { label: "Delete a deployment", cmd: "kubectl delete deployment ingest -n data-lake", need: "admins" },
+  local: { label: "Use the local admin account", cmd: "az aks get-credentials -g rg-platform-dev -n aks-platform-dev --admin", need: "never" }
+};
+const AKS_INTRO = [
+  { tone: "muted", text: "# Azure AKS · Entra ID groups + Azure RBAC for Kubernetes · SIMULATION ONLY" },
+  { tone: "muted", text: "# Cluster: aks-platform-dev (placeholder). Local accounts disabled." },
+  { tone: "normal", text: "Pick a user and an action. Move users between Entra ID groups to change access." }
+];
+
+function AksScenario() {
+  const r = useRunner(AKS_INTRO);
+  const [groups, setGroups] = useState({ alice: "admins", ben: "readers", carol: "none" });
+  const [user, setUser] = useState("ben");
+  const [action, setAction] = useState("pods");
+  const [outcome, setOutcome] = useState("idle");
+  const group = groups[user];
+
+  const move = (to) => {
+    r.push([{ tone: "command", text: `$ move ${user} to ${AKS_GROUPS[to]} (Entra ID)` }]);
+    r.run([
+      { delay: 500, text: "Entra ID group membership updated." },
+      { delay: 600, tone: "success", text: `${user} is now in ${AKS_GROUPS[to]}. No change needed inside the cluster.`, fx: () => { setGroups((g) => ({ ...g, [user]: to })); setOutcome("idle"); } }
+    ]);
+  };
+
+  const run = () => {
+    const a = AKS_ACTIONS[action];
+    setOutcome("running");
+    r.push([{ tone: "command", text: `$ ${a.cmd}   # as ${user}` }]);
+    const steps = [{ delay: 500, text: `Signing in as ${user} with Microsoft Entra ID...` }];
+    let allowed;
+    if (a.need === "never") {
+      allowed = false;
+      steps.push(
+        { delay: 600, tone: "danger", text: "Forbidden: local accounts are disabled on this cluster. Admin kubeconfig is not available." },
+        { delay: 400, tone: "muted", text: "Access is only through Entra ID, so every action maps to a named identity.", fx: () => setOutcome("denied") }
+      );
+    } else {
+      allowed = a.need === "any" ? group !== "none" : group === "admins";
+      steps.push({ delay: 600, tone: "warning", text: `Token issued. Group membership: ${AKS_GROUPS[group]}. Checking Azure RBAC role assignments...` });
+      if (allowed) {
+        steps.push({ delay: 600, tone: "success", text: a.need === "any" && group === "readers" ? "Allowed: AKS RBAC Reader and Cluster User roles apply." : "Allowed: AKS RBAC Cluster Admin role applies." },
+                   { delay: 400, tone: "success", text: "Action recorded in the audit log under the user's identity.", fx: () => setOutcome("granted") });
+      } else {
+        steps.push({ delay: 600, tone: "danger", text: group === "none" ? "Forbidden: no role assignment grants this user access to the cluster." : "Forbidden: the Reader role does not allow this action." },
+                   { delay: 400, tone: "muted", text: group === "none" ? "Ask for membership of the right Entra ID group. No cluster change is required." : "Admin rights require membership of the admins group.", fx: () => setOutcome("denied") });
+      }
+    }
+    r.run(steps);
+  };
+
+  const reset = () => { r.reset(); setGroups({ alice: "admins", ben: "readers", carol: "none" }); setUser("ben"); setAction("pods"); setOutcome("idle"); };
+  const cls = outcome === "denied" ? "destroyed" : outcome === "running" ? "restoring" : "";
+  const others = ["admins", "readers", "none"].filter((g) => g !== group);
+
+  return (
+    <>
+      <Brief title="Identity-based access to Kubernetes on Azure" summary="Built Azure AKS clusters and VNets for a data lake project, with Entra ID groups managing access. In my reference implementation those groups map to Azure RBAC roles. Switch users, change group membership and try admin and read-only actions." tags={["Azure AKS", "Entra ID", "Azure RBAC", "VNets"]} repo="azure-aks-vnet-terraform" />
+      <Shell title="azure / aks-entra-rbac" lines={r.lines}>
+        <TerminalPane lines={r.lines} busy={r.busy} label="azure · read-only simulation" />
+        <aside className="sim-control-pane">
+          <div className="control-heading"><Cloud size={18} /><span>USER AND ACTION</span></div>
+          <label className="field">USER
+            <select value={user} onChange={(e) => { setUser(e.target.value); setOutcome("idle"); }} disabled={r.busy}>
+              <option value="alice">alice</option>
+              <option value="ben">ben</option>
+              <option value="carol">carol</option>
+            </select>
+          </label>
+          <label className="field">ACTION
+            <select value={action} onChange={(e) => { setAction(e.target.value); setOutcome("idle"); }} disabled={r.busy}>
+              {Object.entries(AKS_ACTIONS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+            </select>
+          </label>
+          <div className={`environment-status ${cls}`}>
+            <div className="status-icon">{outcome === "denied" ? <ShieldAlert size={22} /> : <UserCheck size={22} />}</div>
+            <div><strong>{outcome === "granted" ? "ALLOWED" : outcome === "denied" ? "FORBIDDEN" : outcome === "running" ? "AUTHORIZING" : "READY"}</strong><small>{user} · {AKS_GROUPS[group]}</small></div>
+          </div>
+          <div className="sim-actions">
+            <button className="button button-primary button-full" onClick={run} disabled={r.busy}><Play size={15} /> Run command</button>
+            {others.map((g) => <button key={g} className="button button-muted button-full" onClick={() => move(g)} disabled={r.busy}>Move to {AKS_GROUPS[g]}</button>)}
+            <button className="button button-quiet button-full" onClick={reset} disabled={r.busy}><RotateCcw size={14} /> Reset</button>
+          </div>
+          <p className="sim-note">Simplified for the demo. Real access depends on the role assignments, scopes and any Kubernetes-level RBAC in place.</p>
+        </aside>
+      </Shell>
+    </>
+  );
+}
+
 /* ---------- Scenario: EKS GitOps drift and rollback ---------- */
 
 const GITOPS_INTRO = [
@@ -784,6 +881,7 @@ const scenarios = [
   { id: "dr", group: "Resilience & operations", label: "AZ failover drill", Icon: Activity, Component: DrScenario },
   { id: "sftp", group: "Platform & automation", label: "Vendor-isolated SFTP", Icon: FolderLock, Component: SftpScenario },
   { id: "sso", group: "Security & identity", label: "Entra SSO access", Icon: UserCheck, Component: SsoScenario },
+  { id: "aks", group: "Security & identity", label: "Azure AKS access", Icon: Cloud, Component: AksScenario },
   { id: "gitops", group: "Platform & automation", label: "EKS GitOps", Icon: GitBranch, Component: GitopsScenario },
   { id: "incident", group: "Resilience & operations", label: "Incident triage", Icon: Siren, Component: IncidentScenario }
 ];
@@ -806,7 +904,7 @@ export default function SimulationLab() {
         <div>
           <span className="eyebrow"><span className="eyebrow-dot" /> INTERACTIVE DEMONSTRATIONS</span>
           <h2>Simulation <span className="gradient-text">Lab</span></h2>
-          <p className="section-intro">Click through scripted scenarios based on my project work: infrastructure as code, keyless CI/CD, organization guardrails, vulnerability triage, security alert investigation, WAF and Network Firewall, KMS and secrets, failover drills, managed SFTP, SSO, GitOps and incident response. Everything runs in your browser and nothing connects to AWS, GitHub or Terraform.</p>
+          <p className="section-intro">Click through scripted scenarios based on my project work: infrastructure as code, keyless CI/CD, organization guardrails, vulnerability triage, security alert investigation, WAF and Network Firewall, KMS and secrets, failover drills, managed SFTP, SSO, Azure AKS access, GitOps and incident response. Everything runs in your browser and nothing connects to AWS, GitHub or Terraform.</p>
         </div>
         <span className="simulation-pill"><span /> SIMULATION MODE</span>
       </div>
